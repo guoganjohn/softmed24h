@@ -1,4 +1,5 @@
 
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager {
@@ -17,5 +18,13 @@ class SessionManager {
   Future<void> clearToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
+  }
+
+  Future<bool> isTokenExpired() async {
+    final token = await getToken();
+    if (token == null) {
+      return true;
+    }
+    return JwtDecoder.isExpired(token);
   }
 }
