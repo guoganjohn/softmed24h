@@ -51,6 +51,15 @@ class UserBaseInfo(BaseModel):
     id: int
     email: str
     name: Optional[str] = None
+    is_active: bool
+
+class UserMeResponse(BaseModel):
+    id: int
+    email: str
+    name: Optional[str] = None
+    is_active: bool
+    phone: Optional[str] = None
+    has_active_payment: bool
 
 # Import after User is defined to avoid circular import
 from app.schemas.medical_record import MedicalRecord

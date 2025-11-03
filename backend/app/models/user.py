@@ -34,6 +34,7 @@ class User(Base):
     appointments_as_patient = relationship("Appointment", foreign_keys="[Appointment.patient_id]", back_populates="patient")
     appointments_as_doctor = relationship("Appointment", foreign_keys="[Appointment.doctor_id]", back_populates="doctor")
     prescriptions_as_prescriber = relationship("Prescription", foreign_keys="[Prescription.prescriber_id]", back_populates="prescriber")
+    payments = relationship("Payment", back_populates="user")
 
     # Queue management fields
     queue_status = Column(String, index=True, default='waiting') # e.g., 'waiting', 'in_service', 'completed', 'no_wait'

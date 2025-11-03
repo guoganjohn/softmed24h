@@ -295,11 +295,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         await SessionManager().saveToken(
                           authResponse.accessToken,
                         );
+
+                        final user = await apiService.getCurrentUser(authResponse.accessToken);
+
                         _showSnackBar(
                           'Login realizado com sucesso!',
                           Colors.green,
                         );
-                        context.go('/home');
+
+                        if (!user.hasActivePayment) {
+                          context.go('/payment');
+                        } else {
+                          context.go('/home');
+                        }
                       } catch (e) {
                         _showSnackBar(
                           'Falha no login: ${e.toString()}',

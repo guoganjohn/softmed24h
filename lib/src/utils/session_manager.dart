@@ -25,6 +25,11 @@ class SessionManager {
     if (token == null) {
       return true;
     }
-    return JwtDecoder.isExpired(token);
+    try {
+      return JwtDecoder.isExpired(token);
+    } catch (e) {
+      // If there's an error decoding the token (e.g., malformed), consider it expired.
+      return true;
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:softmed24h/src/services/viacep_service.dart';
 import 'package:softmed24h/src/utils/api_service.dart';
 import 'package:softmed24h/src/utils/app_colors.dart';
 import 'package:softmed24h/src/utils/input_formatters.dart';
+import 'package:softmed24h/src/utils/session_manager.dart';
 import 'package:softmed24h/src/widgets/app_button.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -479,8 +480,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _selectedState!,
                         _selectedCity!,
                       );
+
+                      // After successful registration, attempt to log in
+                      final authResponse = await apiService.login(
+                        _emailController.text,
+                        _passwordController.text,
+                      );
+
+                      // Save the token
+                      final sessionManager = SessionManager();
+                      await sessionManager.saveToken(authResponse.accessToken);
+
                       _showSnackBar(
-                        'Cadastro realizado com sucesso! Por favor, faça o pagamento.',
+                        'Cadastro realizado com sucesso! Redirecionando para pagamento.',
                         Colors.green,
                       );
                       context.go('/payment');

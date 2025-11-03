@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.database import Base
 # Import all models here
-from app.models import user, appointment, medical_record, prescription
+from app.models import user, appointment, medical_record, prescription, transaction, payment
 
 
 # this is the Alembic Config object, which provides

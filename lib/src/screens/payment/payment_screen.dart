@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:softmed24h/src/utils/app_colors.dart';
+import 'package:softmed24h/src/utils/session_manager.dart'; // Import SessionManager
+import 'package:softmed24h/src/utils/api_service.dart'; // Import ApiService
 import 'package:softmed24h/src/widgets/app_button.dart';
 
 // --- ENUM FOR PAYMENT METHOD ---
@@ -19,6 +21,7 @@ class _PaymentScreenState extends State<PaymentScreen>
     with SingleTickerProviderStateMixin {
   PaymentMethod _selectedPaymentMethod = PaymentMethod.creditCard;
   bool _saveCardChecked = false;
+  User? _currentUser; // Declare User state variable
 
   // Controllers for the form fields
   final TextEditingController _nameController = TextEditingController();
@@ -40,6 +43,45 @@ class _PaymentScreenState extends State<PaymentScreen>
     _tabController!.addListener(() {
       setState(() {}); // To rebuild the widget when tab changes
     });
+    _fetchUserData(); // Fetch user data on init
+  }
+
+  Future<void> _fetchUserData() async {
+    final sessionManager = SessionManager();
+    final apiService = ApiService();
+    try {
+      final token = await sessionManager.getToken();
+      if (token == null) {
+        debugPrint('PaymentScreen: Token is null, redirecting to /.');
+        await sessionManager.clearToken();
+        if (mounted) {
+          context.go('/');
+        }
+        return;
+      }
+
+      final isExpired = await sessionManager.isTokenExpired();
+      if (isExpired) {
+        debugPrint('PaymentScreen: Token is expired, redirecting to /.');
+        await sessionManager.clearToken();
+        if (mounted) {
+          context.go('/');
+        }
+        return;
+      }
+
+      debugPrint('PaymentScreen: Token found and not expired, fetching user data.');
+      final user = await apiService.getCurrentUser(token);
+      setState(() {
+        _currentUser = user;
+      });
+    } catch (e) {
+      debugPrint('PaymentScreen: Error fetching user data: $e');
+      await sessionManager.clearToken();
+      if (mounted) {
+        context.go('/');
+      }
+    }
   }
 
   @override
@@ -103,8 +145,9 @@ class _PaymentScreenState extends State<PaymentScreen>
               fontSize: 18,
               icon: Icons.logout,
               iconSize: 20,
-              onPressed: () {
-                context.go('/login');
+              onPressed: () async {
+                await SessionManager().clearToken();
+                context.go('/');
               },
             ),
           ],
@@ -190,6 +233,9 @@ class _PaymentScreenState extends State<PaymentScreen>
   // --- WIDGET BUILDERS ---
 
   Widget _buildWarningBanner() {
+    if (_currentUser == null || _currentUser!.hasActivePayment) {
+      return const SizedBox.shrink(); // Don't show banner if user data is not loaded or if there's an active payment
+    }
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -380,16 +426,16 @@ class _PaymentScreenState extends State<PaymentScreen>
   }
 
   Widget _buildAccountData() {
+    if (_currentUser == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return _InfoSection(
       title: 'Dados da Conta',
       children: [
         const SizedBox(height: 8),
-        _buildReadOnlyField('Responsável:', 'Aliceia Clara S.'),
-        _buildReadOnlyField('Email:', 'aliceiasimples@outlook.com'),
-        _buildReadOnlyField(
-          'Celular:',
-          '098.431.854/0001-44',
-        ), // Placeholder for document/phone
+        _buildReadOnlyField('Responsável:', _currentUser!.name ?? 'N/A'),
+        _buildReadOnlyField('Email:', _currentUser!.email),
+        _buildReadOnlyField('Celular:', _currentUser!.phone ?? 'N/A'),
       ],
     );
   }

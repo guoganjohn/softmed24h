@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models.user import User as UserModel # Explicitly import and alias User as UserModel
+from app.models.payment import Payment as PaymentModel # Import Payment model
+from datetime import datetime # Import datetime
 from app.schemas import user as user_schema
 from passlib.context import CryptContext
 from app.routers.auth import oauth2_scheme, SECRET_KEY, ALGORITHM # Import oauth2_scheme, SECRET_KEY, ALGORITHM
@@ -50,12 +52,25 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     return user
 
-@router.get("/users/me", response_model=user_schema.UserBaseInfo) # Use a specific schema to return limited info
-def read_users_me(current_user: UserModel = Depends(get_current_user)):
+@router.get("/users/me", response_model=user_schema.UserMeResponse)
+def read_users_me(current_user: UserModel = Depends(get_current_user), db: Session = Depends(get_db)):
     """
-    Get the current logged-in user's information.
+    Get the current logged-in user's information, including active payment status and phone number.
     """
-    return {"name": current_user.name, "email": current_user.email, "id": current_user.id}
+    active_payment = db.query(PaymentModel).filter(
+        PaymentModel.user_id == current_user.id,
+        PaymentModel.end_date > datetime.utcnow()
+    ).first()
+    has_active_payment = active_payment is not None
+
+    return {
+        "name": current_user.name,
+        "email": current_user.email,
+        "id": current_user.id,
+        "is_active": current_user.is_active,
+        "phone": current_user.phone,
+        "has_active_payment": has_active_payment
+    }
 
 @router.post("/users/", response_model=user_schema.User)
 def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):

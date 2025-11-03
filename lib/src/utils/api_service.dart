@@ -107,6 +107,21 @@ class ApiService {
       throw Exception('Failed to register user: ${response.body}');
     }
   }
+  Future<User> getCurrentUser(String accessToken) async {
+    final url = Uri.parse('$_baseUrl/users/me');
+    final response = await http.get(
+      url,
+      headers: {'Authorization': 'Bearer $accessToken'},
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(json.decode(response.body));
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized: Token expired or invalid.');
+    } else {
+      throw Exception('Failed to fetch current user: ${response.body}');
+    }
+  }
 }
 
 class AuthResponse {
@@ -130,7 +145,7 @@ class User {
   final String? name;
   final String? gender;
   final String? cpf;
-  final String? phone;
+  final String phone; // Now non-nullable
   final String? birthday;
   final String? cep;
   final String? logradouro;
@@ -139,6 +154,7 @@ class User {
   final String? bairro;
   final String? estado;
   final String? cidade;
+  final bool hasActivePayment; // New field
 
   User({
     required this.id,
@@ -147,7 +163,7 @@ class User {
     this.name,
     this.gender,
     this.cpf,
-    this.phone,
+    required this.phone, // Now required
     this.birthday,
     this.cep,
     this.logradouro,
@@ -156,6 +172,7 @@ class User {
     this.bairro,
     this.estado,
     this.cidade,
+    required this.hasActivePayment, // Now required
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -175,6 +192,7 @@ class User {
       bairro: json['bairro'],
       estado: json['estado'],
       cidade: json['cidade'],
+      hasActivePayment: json['has_active_payment'],
     );
   }
 }
