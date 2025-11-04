@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:softmed24h/src/utils/api_service.dart'; // Import ApiService
 import 'package:softmed24h/src/utils/app_colors.dart';
 import 'package:softmed24h/src/utils/session_manager.dart'; // Import SessionManager
-import 'package:softmed24h/src/utils/api_service.dart'; // Import ApiService
 import 'package:softmed24h/src/widgets/app_button.dart';
 
 // --- ENUM FOR PAYMENT METHOD ---
@@ -31,6 +31,7 @@ class _PaymentScreenState extends State<PaymentScreen>
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _cepController = TextEditingController();
+  final TextEditingController _pagadorController = TextEditingController();
 
   // Global key for form validation
   final _formKey = GlobalKey<FormState>();
@@ -70,7 +71,9 @@ class _PaymentScreenState extends State<PaymentScreen>
         return;
       }
 
-      debugPrint('PaymentScreen: Token found and not expired, fetching user data.');
+      debugPrint(
+        'PaymentScreen: Token found and not expired, fetching user data.',
+      );
       final user = await apiService.getCurrentUser(token);
       setState(() {
         _currentUser = user;
@@ -94,6 +97,7 @@ class _PaymentScreenState extends State<PaymentScreen>
     _cpfController.dispose();
     _phoneController.dispose();
     _cepController.dispose();
+    _pagadorController.dispose();
     super.dispose();
   }
 
@@ -302,10 +306,7 @@ class _PaymentScreenState extends State<PaymentScreen>
           // Left side: Icon and Title
           Column(
             children: [
-              Image.asset(
-                'assets/images/logo.png',
-                height: 40,
-              ),
+              Image.asset('assets/images/logo.png', height: 40),
               const SizedBox(height: 8),
               const Text(
                 'R\$ 49,90',
@@ -396,10 +397,16 @@ class _PaymentScreenState extends State<PaymentScreen>
           value: PaymentMethod.pixBoleto,
         ),
         const SizedBox(height: 8),
-        const Text(
-          'O seu pedido é pago online, utilizando cartão de crédito. Todo o processamento do pagamento é realizado de maneira automatizada.',
-          style: TextStyle(fontSize: 12, color: Colors.black54),
-        ),
+        if (_selectedPaymentMethod == PaymentMethod.creditCard)
+          const Text(
+            'O seu pedido é pago online, utilizando cartão de crédito. Todo o processamento do pagamento é realizado de maneira automatizada.',
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          )
+        else if (_selectedPaymentMethod == PaymentMethod.pixBoleto)
+          const Text(
+            'O seu pedido é pago online, utilizando Pix. Todo o processamento do pagamento é realizado de maneira automatizada.',
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          ),
       ],
     );
   }
@@ -432,8 +439,9 @@ class _PaymentScreenState extends State<PaymentScreen>
     return _InfoSection(
       title: 'Dados da Conta',
       children: [
+        const Text('Responsável:'),
         const SizedBox(height: 8),
-        _buildReadOnlyField('Responsável:', _currentUser!.name ?? 'N/A'),
+        _buildReadOnlyField('Nome:', _currentUser!.name ?? 'N/A'),
         _buildReadOnlyField('Email:', _currentUser!.email),
         _buildReadOnlyField('Celular:', _currentUser!.phone ?? 'N/A'),
       ],
@@ -615,14 +623,56 @@ class _PaymentScreenState extends State<PaymentScreen>
               ),
             ],
           ),
-        // Pix/Boleto Info (Placeholder)
+        // Pix/Boleto Info
         if (_selectedPaymentMethod == PaymentMethod.pixBoleto)
-          const Padding(
-            padding: EdgeInsets.only(top: 16.0),
-            child: Text(
-              'O pagamento via Pix ou Boleto será processado após a confirmação. Instruções serão enviadas por e-mail.',
-              style: TextStyle(fontSize: 14, color: Colors.blueGrey),
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _PaymentTextField(
+                controller: _pagadorController,
+                label: 'Pagador',
+                hintText: 'Nome completo do pagador',
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Campo obrigatório' : null,
+              ),
+              _PaymentTextField(
+                controller: _cpfController,
+                label: 'CPF',
+                hintText: '000.000.000-00',
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(11),
+                ],
+                validator: (value) =>
+                    value == null || value.length < 11 ? 'CPF inválido' : null,
+              ),
+              _PaymentTextField(
+                controller: _phoneController,
+                label: 'Celular',
+                hintText: '(00) 00000-0000',
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(11),
+                ],
+                validator: (value) => value == null || value.length < 11
+                    ? 'Telefone inválido'
+                    : null,
+              ),
+              _PaymentTextField(
+                controller: _cepController,
+                label: 'CEP',
+                hintText: '00000-000',
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(8),
+                ],
+                validator: (value) =>
+                    value == null || value.length < 8 ? 'CEP inválido' : null,
+              ),
+            ],
           ),
       ],
     );
