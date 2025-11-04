@@ -25,9 +25,7 @@ class ApiService {
     final url = Uri.parse('$_baseUrl/forgot-password');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email}),
     );
 
@@ -40,13 +38,14 @@ class ApiService {
   }
 
   Future<void> resetPassword(
-      String token, String newPassword, String confirmNewPassword) async {
+    String token,
+    String newPassword,
+    String confirmNewPassword,
+  ) async {
     final url = Uri.parse('$_baseUrl/reset-password'); // Assuming this endpoint
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'token': token,
         'new_password': newPassword,
@@ -62,27 +61,25 @@ class ApiService {
   }
 
   Future<User> register(
-      String email,
-      String password,
-      String name,
-      String? gender,
-      String cpf,
-      String phone,
-      String birthday,
-      String cep,
-      String logradouro,
-      String numero,
-      String? complemento,
-      String bairro,
-      String estado,
-      String cidade,
-      ) async {
+    String email,
+    String password,
+    String name,
+    String? gender,
+    String cpf,
+    String phone,
+    String birthday,
+    String cep,
+    String logradouro,
+    String numero,
+    String? complemento,
+    String bairro,
+    String estado,
+    String cidade,
+  ) async {
     final url = Uri.parse('$_baseUrl/users/');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'email': email,
         'password': password,
@@ -107,6 +104,7 @@ class ApiService {
       throw Exception('Failed to register user: ${response.body}');
     }
   }
+
   Future<User> getCurrentUser(String accessToken) async {
     final url = Uri.parse('$_baseUrl/users/me');
     final response = await http.get(

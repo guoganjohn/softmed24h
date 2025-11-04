@@ -59,6 +59,7 @@ class UserMeResponse(BaseModel):
     name: Optional[str] = None
     is_active: bool
     phone: Optional[str] = None
+    cpf: Optional[str] = None
     has_active_payment: bool
 
 # Import after User is defined to avoid circular import

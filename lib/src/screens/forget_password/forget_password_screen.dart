@@ -38,7 +38,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       } catch (e) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Falha ao enviar link de redefinição: ${e.toString()}';
+          _errorMessage =
+              'Falha ao enviar link de redefinição: ${e.toString()}';
         });
       }
     }
@@ -47,9 +48,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Esqueci a Senha'),
-      ),
+      appBar: AppBar(title: const Text('Esqueci a Senha')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -59,26 +58,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/images/logo.png',
-                  height: 100,
-                ),
+                Image.asset('assets/images/logo.png', height: 100),
                 const SizedBox(height: 20),
                 const Text(
                   'Esqueceu sua Senha?',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 const Text(
                   'Digite seu e-mail para receber um link de redefinição de senha.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 const SizedBox(height: 30),
                 Card(
@@ -103,7 +93,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Por favor, digite seu e-mail';
                             }
-                            if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+                            if (!RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                            ).hasMatch(value)) {
                               return 'Por favor, digite um endereço de e-mail válido';
                             }
                             return null;
@@ -121,11 +113,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         _isLoading
                             ? const CircularProgressIndicator()
                             : SizedBox(
-                                width: double.infinity, // Make button full width
+                                width:
+                                    double.infinity, // Make button full width
                                 child: ElevatedButton(
                                   onPressed: _submitForm,
                                   style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 15,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),

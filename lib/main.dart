@@ -7,7 +7,9 @@ import 'package:softmed24h/src/config/app_router.dart'; // Import the GoRouter i
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setUrlStrategy(PathUrlStrategy()); // Ensure path strategy is set
-  await dotenv.load(fileName: kReleaseMode ? ".env.production" : ".env.development");
+  await dotenv.load(
+    fileName: kReleaseMode ? ".env.production" : ".env.development",
+  );
   runApp(const MyApp());
 }
 
@@ -27,4 +29,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

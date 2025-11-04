@@ -69,6 +69,7 @@ def read_users_me(current_user: UserModel = Depends(get_current_user), db: Sessi
         "id": current_user.id,
         "is_active": current_user.is_active,
         "phone": current_user.phone,
+        "cpf": current_user.cpf,
         "has_active_payment": has_active_payment
     }
 

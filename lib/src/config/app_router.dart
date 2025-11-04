@@ -69,7 +69,8 @@ final GoRouter appRouter = GoRouter(
   redirect: (BuildContext context, GoRouterState state) async {
     final sessionManager = SessionManager();
     final token = await sessionManager.getToken();
-    final bool loggedIn = token != null && !await sessionManager.isTokenExpired();
+    final bool loggedIn =
+        token != null && !await sessionManager.isTokenExpired();
     final bool loggingIn =
         state.matchedLocation == '/login' ||
         state.matchedLocation == '/cadastro' ||

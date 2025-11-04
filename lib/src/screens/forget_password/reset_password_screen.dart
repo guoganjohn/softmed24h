@@ -40,7 +40,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           _passwordController.text,
           _confirmPasswordController.text,
         );
-        _showSnackBar('Senha redefinida com sucesso! Por favor, faça login.', Colors.green);
+        _showSnackBar(
+          'Senha redefinida com sucesso! Por favor, faça login.',
+          Colors.green,
+        );
         context.go('/login');
       } catch (e) {
         setState(() {
@@ -53,19 +56,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       }
     }
   }
-    void _showSnackBar(String message, Color color) {
+
+  void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Redefinir Senha'),
-      ),
+      appBar: AppBar(title: const Text('Redefinir Senha')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -75,26 +76,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/images/logo.png',
-                  height: 100,
-                ),
+                Image.asset('assets/images/logo.png', height: 100),
                 const SizedBox(height: 20),
                 const Text(
                   'Redefinir Sua Senha',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 const Text(
                   'Por favor, digite sua nova senha abaixo.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 const SizedBox(height: 30),
                 Card(
@@ -156,11 +148,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         _isLoading
                             ? const CircularProgressIndicator()
                             : SizedBox(
-                                width: double.infinity, // Make button full width
+                                width:
+                                    double.infinity, // Make button full width
                                 child: ElevatedButton(
                                   onPressed: _submitForm,
                                   style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 15,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),

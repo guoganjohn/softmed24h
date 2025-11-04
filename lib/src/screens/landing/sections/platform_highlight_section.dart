@@ -64,7 +64,11 @@ class VideoPlaceholder extends StatelessWidget {
         child: Container(
           color: Colors.grey[300],
           child: const Center(
-            child: Icon(Icons.play_circle_outline, size: 64, color: Colors.blue),
+            child: Icon(
+              Icons.play_circle_outline,
+              size: 64,
+              color: Colors.blue,
+            ),
           ),
         ),
       ),

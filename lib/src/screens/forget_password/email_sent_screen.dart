@@ -6,12 +6,8 @@ class EmailSentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('E-mail Enviado'),
-      ),
-      body: Center(
-        child: Text('Conteúdo da Tela de E-mail Enviado'),
-      ),
+      appBar: AppBar(title: const Text('E-mail Enviado')),
+      body: Center(child: Text('Conteúdo da Tela de E-mail Enviado')),
     );
   }
 }

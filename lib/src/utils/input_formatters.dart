@@ -166,7 +166,9 @@ class CepInputFormatter extends TextInputFormatter {
 class CreditCardNumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final text = newValue.text;
 
     if (newValue.selection.baseOffset == 0) {
@@ -177,8 +179,10 @@ class CreditCardNumberInputFormatter extends TextInputFormatter {
     var nonDigits = 0;
     for (var i = 0; i < text.length; i++) {
       final char = text[i];
-      if (char.runes.first >= 48 && char.runes.first <= 57) { // Check if it's a digit
-        if (nonDigits >= 16) { // Restrict to 16 digits
+      if (char.runes.first >= 48 && char.runes.first <= 57) {
+        // Check if it's a digit
+        if (nonDigits >= 16) {
+          // Restrict to 16 digits
           break;
         }
 
@@ -201,7 +205,9 @@ class CreditCardNumberInputFormatter extends TextInputFormatter {
 class CreditCardValidityInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final text = newValue.text;
 
     if (newValue.selection.baseOffset == 0) {
@@ -212,8 +218,10 @@ class CreditCardValidityInputFormatter extends TextInputFormatter {
     var nonDigits = 0;
     for (var i = 0; i < text.length; i++) {
       final char = text[i];
-      if (char.runes.first >= 48 && char.runes.first <= 57) { // Check if it's a digit
-        if (nonDigits >= 4) { // Restrict to 4 digits (MMYY)
+      if (char.runes.first >= 48 && char.runes.first <= 57) {
+        // Check if it's a digit
+        if (nonDigits >= 4) {
+          // Restrict to 4 digits (MMYY)
           break;
         }
 
@@ -232,4 +240,3 @@ class CreditCardValidityInputFormatter extends TextInputFormatter {
     );
   }
 }
-

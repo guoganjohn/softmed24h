@@ -296,7 +296,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           authResponse.accessToken,
                         );
 
-                        final user = await apiService.getCurrentUser(authResponse.accessToken);
+                        final user = await apiService.getCurrentUser(
+                          authResponse.accessToken,
+                        );
 
                         _showSnackBar(
                           'Login realizado com sucesso!',

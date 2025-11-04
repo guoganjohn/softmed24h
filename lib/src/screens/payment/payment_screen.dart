@@ -479,7 +479,13 @@ class _PaymentScreenState extends State<PaymentScreen>
           alignment: Alignment.centerRight,
           child: TextButton(
             onPressed: () {
-              // Mock action: Use my data
+              if (_currentUser != null) {
+                setState(() {
+                  _pagadorController.text = _currentUser!.name ?? '';
+                  _cpfController.text = _currentUser!.cpf ?? '';
+                  _phoneController.text = _currentUser!.phone ?? '';
+                });
+              }
             },
             child: const Text(
               'Utilizar Meus Dados',
