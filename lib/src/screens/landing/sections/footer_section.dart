@@ -10,7 +10,7 @@ class FooterSection extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'A Plataforma MeuMed é administrada pela SoftMed24h Brazil.',
+            'A Plataforma SoftMed24h é administrada pela SoftMed24h Brazil.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.width < 600 ? 12 : 14,

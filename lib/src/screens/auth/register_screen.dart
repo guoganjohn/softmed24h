@@ -157,6 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // --- App Bar ---
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: AppColors.secondary,
@@ -176,23 +177,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Image.asset('assets/images/logo.png', height: 40),
                     const SizedBox(width: 10),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'MeuMed',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                    if (!isSmallScreen)
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'SoftMed24h',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                        Text(
-                          'Nosso plano é a sua saúde',
-                          style: TextStyle(color: AppColors.text, fontSize: 12),
-                        ),
-                      ],
-                    ),
+                          Text(
+                            'Nosso plano é a sua saúde',
+                            style: TextStyle(
+                              color: AppColors.text,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -200,9 +205,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const Spacer(),
             AppButton(
               label: 'Entrar',
-              width: 200,
+              width: isSmallScreen ? 120 : 200,
               height: 40,
-              fontSize: 18,
+              fontSize: isSmallScreen ? 16 : 18,
               onPressed: () {
                 context.go('/login');
               },
@@ -237,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Right Section (Form) - Adapted for Registration Fields
   Widget _buildFormSection(BuildContext context, bool isWideScreen) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 40.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -283,7 +288,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SizedBox(height: 20),
 
           // 3. Gender and CPF
-          _buildGenderSection(context),
+          _buildGenderSection(context, isWideScreen),
           const SizedBox(height: 20),
 
           // CPF Field
@@ -449,17 +454,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _register() async {
     if (_formKey.currentState!.validate()) {
       if (!_acceptTerms) {
-        _showSnackBar(
-          'Você deve aceitar os termos e condições',
-          Colors.red,
-        );
+        _showSnackBar('Você deve aceitar os termos e condições', Colors.red);
         return;
       }
       if (_selectedGender == null) {
-        _showSnackBar(
-          'Por favor, selecione seu gênero',
-          Colors.red,
-        );
+        _showSnackBar('Por favor, selecione seu gênero', Colors.red);
         return;
       }
       // Password match check is now handled by the validator in _buildTextField
@@ -467,9 +466,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final apiService = ApiService();
       try {
         // Reformat birthday from DD/MM/YYYY to YYYY-MM-DD
-        final List<String> dobParts = _dobController.text.split(
-          '/',
-        );
+        final List<String> dobParts = _dobController.text.split('/');
         final String formattedBirthday =
             '${dobParts[2]}-${dobParts[1]}-${dobParts[0]}';
 
@@ -507,10 +504,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (!mounted) return;
         context.go('/payment');
       } catch (e) {
-        _showSnackBar(
-          'Falha no cadastro: ${e.toString()}',
-          Colors.red,
-        );
+        _showSnackBar('Falha no cadastro: ${e.toString()}', Colors.red);
       }
     }
   }
@@ -735,8 +729,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildGenderSection(BuildContext context) {
-    // This is styled to match the image's use of separate inputs for Gender and CPF
+  Widget _buildGenderSection(BuildContext context, bool isWideScreen) {
+    final radioButtons = [
+      _buildGenderRadio('Masculino'),
+      _buildGenderRadio('Feminino'),
+      _buildGenderRadio('Não-binário'),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -745,85 +744,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
           mandatory: true,
           tooltipMessage: 'Informe o seu gênero.',
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Column(
+        isWideScreen
+            ? Row(
+                children: radioButtons
+                    .map((widget) => Expanded(child: widget))
+                    .toList(),
+              )
+            : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Radio Buttons for Gender
-                  Row(
-                    children: [
-                      Radio<String>(
-                        value: 'Masculino',
-                        groupValue: _selectedGender,
-                        onChanged: (String? value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
-                        activeColor: AppColors.primary,
-                      ),
-                      const Text(
-                        'Masculino',
-                        style: TextStyle(color: AppColors.text),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Radio<String>(
-                        value: 'Feminino',
-                        groupValue: _selectedGender,
-                        onChanged: (String? value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
-                        activeColor: AppColors.primary,
-                      ),
-                      const Text(
-                        'Feminino',
-                        style: TextStyle(color: AppColors.text),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Radio<String>(
-                        value: 'Não-binário',
-                        groupValue: _selectedGender,
-                        onChanged: (String? value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
-                        activeColor: AppColors.primary,
-                      ),
-                      const Text(
-                        'Não-binário',
-                        style: TextStyle(color: AppColors.text),
-                      ),
-                    ],
-                  ),
-                ],
+                children: radioButtons,
               ),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // CPF Field (This will be removed as CPF field is moved outside)
-                  // _buildFormLabel('CPF', mandatory: true),
-                  // _buildTextField(keyboardType: TextInputType.number),
-                ],
-              ),
-            ),
-          ],
+      ],
+    );
+  }
+
+  Widget _buildGenderRadio(String value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Radio<String>(
+          value: value,
+          groupValue: _selectedGender,
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedGender = newValue;
+            });
+          },
+          activeColor: AppColors.primary,
+        ),
+        Flexible(
+          child: Text(value, style: const TextStyle(color: AppColors.text)),
         ),
       ],
     );

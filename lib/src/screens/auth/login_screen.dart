@@ -26,25 +26,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 800;
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 800) {
-            // Mobile/Narrow Layout
-            return _buildMobileLayout(context);
-          } else {
-            // Tablet/Desktop Layout
-            return _buildDesktopLayout(context);
-          }
-        },
-      ),
+      body: isSmallScreen
+          ? _buildMobileLayout(context)
+          : _buildDesktopLayout(context),
     );
   }
 
   // --- App Bar ---
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: AppColors.secondary,
@@ -64,23 +58,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Image.asset('assets/images/logo.png', height: 40),
                     const SizedBox(width: 10),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'MeuMed',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                    if (!isSmallScreen)
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'SoftMed24h',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                        Text(
-                          'Nosso plano é a sua saúde',
-                          style: TextStyle(color: AppColors.text, fontSize: 12),
-                        ),
-                      ],
-                    ),
+                          Text(
+                            'Nosso plano é a sua saúde',
+                            style: TextStyle(
+                              color: AppColors.text,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -88,9 +86,9 @@ class _LoginScreenState extends State<LoginScreen> {
             const Spacer(),
             AppButton(
               label: 'Cadastrar',
-              width: 200,
+              width: isSmallScreen ? 120 : 200,
               height: 40,
-              fontSize: 18,
+              fontSize: isSmallScreen ? 16 : 18,
               onPressed: () {
                 context.go('/cadastro');
               },
@@ -138,15 +136,12 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.black.withAlpha(0),
-              Colors.black.withAlpha(128),
-            ],
+            colors: [Colors.black.withAlpha(0), Colors.black.withAlpha(128)],
             stops: const [0.6, 1.0],
           ),
         ),
         alignment: Alignment.bottomLeft,
-        padding: const EdgeInsets.all(40),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,16 +157,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Text(
-                  'MeuMed.',
+                  'SoftMed24h.',
                   style: TextStyle(
                     color: AppColors.secondary,
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
                     shadows: [
-                      Shadow(
-                        color: Colors.black.withAlpha(128),
-                        blurRadius: 4,
-                      ),
+                      Shadow(color: Colors.black.withAlpha(128), blurRadius: 4),
                     ],
                   ),
                 ),
@@ -196,18 +188,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Right Section (Form)
   Widget _buildFormSection(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return Padding(
-      padding: const EdgeInsets.all(40.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
       child: Form(
         key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Bem-vindo ao MeuMed!',
+            Text(
+              'Bem-vindo ao SoftMed24h!',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: isSmallScreen ? 24 : 28,
                 fontWeight: FontWeight.bold,
                 color: AppColors.text,
               ),
@@ -302,18 +295,11 @@ class _LoginScreenState extends State<LoginScreen> {
           _emailController.text,
           _passwordController.text,
         );
-        await SessionManager().saveToken(
-          authResponse.accessToken,
-        );
+        await SessionManager().saveToken(authResponse.accessToken);
 
-        final user = await apiService.getCurrentUser(
-          authResponse.accessToken,
-        );
+        final user = await apiService.getCurrentUser(authResponse.accessToken);
 
-        _showSnackBar(
-          'Login realizado com sucesso!',
-          Colors.green,
-        );
+        _showSnackBar('Login realizado com sucesso!', Colors.green);
 
         if (!mounted) return;
         if (!user.hasActivePayment) {
@@ -322,10 +308,7 @@ class _LoginScreenState extends State<LoginScreen> {
           context.go('/home');
         }
       } catch (e) {
-        _showSnackBar(
-          'Falha no login: ${e.toString()}',
-          Colors.red,
-        );
+        _showSnackBar('Falha no login: ${e.toString()}', Colors.red);
       }
     }
   }
