@@ -94,7 +94,7 @@ class HowItWorksStep extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    '$number',
+                    number,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,

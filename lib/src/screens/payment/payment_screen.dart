@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:softmed24h/src/services/ibge_service.dart';
+import 'package:softmed24h/src/services/viacep_service.dart';
 import 'package:softmed24h/src/utils/api_service.dart'; // Import ApiService
 import 'package:softmed24h/src/utils/app_colors.dart';
+import 'package:softmed24h/src/utils/input_formatters.dart';
 import 'package:softmed24h/src/utils/session_manager.dart'; // Import SessionManager
 import 'package:softmed24h/src/widgets/app_button.dart';
 
@@ -32,6 +35,23 @@ class _PaymentScreenState extends State<PaymentScreen>
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _pagadorController = TextEditingController();
+  final TextEditingController _logradouroController = TextEditingController();
+  final TextEditingController _numeroController = TextEditingController();
+  final TextEditingController _complementoController = TextEditingController();
+  final TextEditingController _bairroController = TextEditingController();
+
+  Map<String, dynamic>? _addressData;
+  bool _isCepFilled = false;
+  bool _showManualAddress = false;
+  List<String> _states = [];
+  List<String> _cities = [];
+  String? _selectedState;
+  String? _selectedCity;
+  String? _pixQrCodeData;
+  String? _pixTransactionId;
+
+  final ViaCepService _viaCepService = ViaCepService();
+  final IbgeService _ibgeService = IbgeService();
 
   // Global key for form validation
   final _formKey = GlobalKey<FormState>();
@@ -45,6 +65,12 @@ class _PaymentScreenState extends State<PaymentScreen>
       setState(() {}); // To rebuild the widget when tab changes
     });
     _fetchUserData(); // Fetch user data on init
+    _fetchStates();
+    _cepController.addListener(() {
+      if (_cepController.text.length == 9) {
+        _fetchAddressFromCep();
+      }
+    });
   }
 
   Future<void> _fetchUserData() async {
@@ -53,8 +79,8 @@ class _PaymentScreenState extends State<PaymentScreen>
     try {
       final token = await sessionManager.getToken();
       if (token == null) {
-        debugPrint('PaymentScreen: Token is null, redirecting to /.');
         await sessionManager.clearToken();
+        if (!mounted) return;
         if (mounted) {
           context.go('/');
         }
@@ -63,28 +89,74 @@ class _PaymentScreenState extends State<PaymentScreen>
 
       final isExpired = await sessionManager.isTokenExpired();
       if (isExpired) {
-        debugPrint('PaymentScreen: Token is expired, redirecting to /.');
         await sessionManager.clearToken();
+        if (!mounted) return;
         if (mounted) {
           context.go('/');
         }
         return;
       }
 
-      debugPrint(
-        'PaymentScreen: Token found and not expired, fetching user data.',
-      );
       final user = await apiService.getCurrentUser(token);
       setState(() {
         _currentUser = user;
       });
     } catch (e) {
-      debugPrint('PaymentScreen: Error fetching user data: $e');
       await sessionManager.clearToken();
+      if (!mounted) return;
       if (mounted) {
         context.go('/');
       }
     }
+  }
+
+  Future<void> _fetchStates() async {
+    try {
+      final states = await _ibgeService.fetchStates();
+      setState(() {
+        _states = states;
+      });
+    } catch (e) {
+      _showSnackBar('Failed to load states', Colors.red);
+    }
+  }
+
+  Future<void> _fetchCities(String state) async {
+    if (!mounted) return;
+    try {
+      final cities = await _ibgeService.fetchCities(state);
+      setState(() {
+        _cities = cities;
+      });
+    } catch (e) {
+      _showSnackBar('Failed to load cities', Colors.red);
+    }
+  }
+
+  Future<void> _fetchAddressFromCep() async {
+    try {
+      final address = await _viaCepService.fetchAddress(_cepController.text);
+      setState(() {
+        _addressData = address;
+        _logradouroController.text = address['logradouro'] ?? '';
+        _bairroController.text = address['bairro'] ?? '';
+        _selectedState = address['uf'] ?? '';
+        _fetchCities(_selectedState!).then((_) {
+          setState(() {
+            _selectedCity = address['localidade'] ?? '';
+          });
+        });
+        _isCepFilled = true;
+      });
+    } catch (e) {
+      _showSnackBar('Failed to load address from CEP', Colors.red);
+    }
+  }
+
+  void _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
   }
 
   @override
@@ -98,24 +170,55 @@ class _PaymentScreenState extends State<PaymentScreen>
     _phoneController.dispose();
     _cepController.dispose();
     _pagadorController.dispose();
+    _logradouroController.dispose();
+    _numeroController.dispose();
+    _complementoController.dispose();
+    _bairroController.dispose();
     super.dispose();
   }
 
   // Mock function for payment
-  void _processPayment() {
+  void _processPayment() async {
     if (_formKey.currentState!.validate()) {
-      // In a real app, this would call an API
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pagamento em processamento...')),
-      );
-      // Simulate API call delay
-      Future.delayed(const Duration(seconds: 2), () {
+      if (_selectedPaymentMethod == PaymentMethod.pixBoleto) {
+        // Handle PIX payment
+        final sessionManager = SessionManager();
+        final apiService = ApiService();
+        final token = await sessionManager.getToken();
+        if (token == null) {
+          _showSnackBar(
+            'Sessão expirada. Por favor, faça login novamente.',
+            Colors.red,
+          );
+          if (mounted) context.go('/');
+          return;
+        }
+
+        _showSnackBar('Gerando PIX...', AppColors.primary);
+        final pixResponse = await apiService.createPixPayment(
+          token,
+          4990,
+          "Assinatura Softmed24h",
+        ); // Amount in cents
+        setState(() {
+          _pixQrCodeData = pixResponse.pixQrCodeData;
+          _pixTransactionId = pixResponse.pixTransactionId;
+        });
+        _showSnackBar('PIX gerado com sucesso!', Colors.green);
+      } else {
+        // Handle Credit Card or Pix/Boleto payment
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Sucesso! Simulação de pagamento concluída.'),
-          ),
+          const SnackBar(content: Text('Pagamento em processamento...')),
         );
-      });
+        // Simulate API call delay
+        Future.delayed(const Duration(seconds: 2), () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Sucesso! Simulação de pagamento concluída.'),
+            ),
+          );
+        });
+      }
     }
   }
 
@@ -221,7 +324,10 @@ class _PaymentScreenState extends State<PaymentScreen>
                 ),
                 const SizedBox(height: 24),
                 // Payment Button
-                if (_tabController?.index == 0) _buildPaymentButton(),
+                if (_tabController?.index == 0 &&
+                    (_selectedPaymentMethod == PaymentMethod.creditCard ||
+                        _selectedPaymentMethod == PaymentMethod.pixBoleto))
+                  _buildPaymentButton(),
                 const SizedBox(height: 24),
                 // Legal Disclaimer
                 _buildLegalDisclaimer(),
@@ -391,6 +497,7 @@ class _PaymentScreenState extends State<PaymentScreen>
           title: 'Cartão de Crédito',
           value: PaymentMethod.creditCard,
         ),
+
         // Pix/Boleto Radio
         _buildPaymentRadio(
           title: 'Pix / Boleto de Consulta',
@@ -570,42 +677,20 @@ class _PaymentScreenState extends State<PaymentScreen>
                 validator: (value) =>
                     value == null || value.length < 11 ? 'CPF inválido' : null,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _PaymentTextField(
-                      controller: _phoneController,
-                      label: 'Celular',
-                      hintText: '(00) 00000-0000',
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(11),
-                      ],
-                      validator: (value) => value == null || value.length < 11
-                          ? 'Telefone inválido'
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _PaymentTextField(
-                      controller: _cepController,
-                      label: 'CEP',
-                      hintText: '00000-000',
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(8),
-                      ],
-                      validator: (value) => value == null || value.length < 8
-                          ? 'CEP inválido'
-                          : null,
-                    ),
-                  ),
+              _PaymentTextField(
+                controller: _phoneController,
+                label: 'Celular',
+                hintText: '(00) 00000-0000',
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(11),
                 ],
+                validator: (value) => value == null || value.length < 11
+                    ? 'Telefone inválido'
+                    : null,
               ),
+              _buildAddressSection(),
               const SizedBox(height: 16),
               // Save Card Checkbox
               Row(
@@ -666,18 +751,7 @@ class _PaymentScreenState extends State<PaymentScreen>
                     ? 'Telefone inválido'
                     : null,
               ),
-              _PaymentTextField(
-                controller: _cepController,
-                label: 'CEP',
-                hintText: '00000-000',
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(8),
-                ],
-                validator: (value) =>
-                    value == null || value.length < 8 ? 'CEP inválido' : null,
-              ),
+              _buildAddressSection(),
             ],
           ),
       ],
@@ -705,6 +779,215 @@ class _PaymentScreenState extends State<PaymentScreen>
       'Em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei 13.709, de 14 de agosto de 2018), entenda por que coletamos os seus dados.',
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 11, color: Colors.grey),
+    );
+  }
+
+  Widget _buildAddressSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildAddressHeader(),
+        if (!_isCepFilled)
+          _PaymentTextField(
+            controller: _cepController,
+            label: 'CEP',
+            hintText: '00000-000',
+            keyboardType: TextInputType.number,
+            inputFormatters: [CepInputFormatter()],
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor, insira seu CEP';
+              }
+              if (value.length != 9) {
+                return 'O CEP deve ter 9 caracteres';
+              }
+              return null;
+            },
+          )
+        else if (_showManualAddress)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _PaymentTextField(
+                controller: _cepController,
+                inputFormatters: [CepInputFormatter()],
+                hintText: '00000-000',
+                label: 'CEP',
+                mandatory: true,
+                tooltipMessage: 'Informe o CEP do seu endereo.',
+              ),
+              const SizedBox(height: 20),
+              _PaymentTextField(
+                controller: _complementoController,
+                label: 'Complemento',
+                tooltipMessage:
+                    'Informe o complemento do seu endereo, se houver.',
+              ),
+              const SizedBox(height: 20),
+              _PaymentTextField(
+                controller: _bairroController,
+                label: 'Bairro',
+                mandatory: true,
+                tooltipMessage: 'Informe o bairro do seu endereo.',
+              ),
+              const SizedBox(height: 20),
+              InputDecorator(
+                decoration: InputDecoration(
+                  labelText: 'Estado',
+                  labelStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Informe o estado do seu endereo.'),
+                          backgroundColor: AppColors.primary,
+                        ),
+                      );
+                    },
+                    child: Tooltip(
+                      message: 'Informe o estado do seu endereo.',
+                      child: Icon(
+                        Icons.help_outline,
+                        size: 14,
+                        color: AppColors.text.withAlpha((0.6 * 255).round()),
+                      ),
+                    ),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedState,
+                    items: _states.map((String state) {
+                      return DropdownMenuItem<String>(
+                        value: state,
+                        child: Text(state),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedState = newValue;
+                        _selectedCity = null;
+                        _cities = [];
+                        if (newValue != null) {
+                          _fetchCities(newValue);
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              InputDecorator(
+                decoration: InputDecoration(
+                  labelText: 'Cidade',
+                  labelStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Informe a cidade do seu endereo.'),
+                          backgroundColor: AppColors.primary,
+                        ),
+                      );
+                    },
+                    child: Tooltip(
+                      message: 'Informe a cidade do seu endereo.',
+                      child: Icon(
+                        Icons.help_outline,
+                        size: 14,
+                        color: AppColors.text.withAlpha((0.6 * 255).round()),
+                      ),
+                    ),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedCity,
+                    items: _cities.map((String city) {
+                      return DropdownMenuItem<String>(
+                        value: city,
+                        child: Text(city),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedCity = newValue;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          )
+        else
+          Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'CEP ${_cepController.text} - ${_addressData!['logradouro']}${(_addressData!['numero'] as String?)?.isNotEmpty == true ? ', N° ${_addressData!['numero']}' : ''}${(_addressData!['complemento'] as String?)?.isNotEmpty == true ? ', ${_addressData!['complemento']}' : ''}, ${_addressData!['bairro']!}, ${_addressData!['localidade']!}/${_addressData!['uf']!}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _showManualAddress = true;
+                        _numeroController.text = _addressData!['numero'] ?? '';
+                        _complementoController.text =
+                            _addressData!['complemento'] ?? '';
+                      });
+                    },
+                    child: const Text('Mudar'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _PaymentTextField(
+                controller: _numeroController,
+                label: 'Número',
+                mandatory: true,
+                tooltipMessage: 'Informe o número do imóvel do seu endereo.',
+              ),
+              const SizedBox(height: 20),
+              _PaymentTextField(
+                controller: _complementoController,
+                label: 'Complemento',
+                tooltipMessage:
+                    'Informe o complemento do seu endereo, se houver.',
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _buildAddressHeader() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Endereço',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.text,
+            ),
+          ),
+          const Divider(color: Color(0xFFE0E0E0)),
+        ],
+      ),
     );
   }
 }
@@ -748,6 +1031,8 @@ class _PaymentTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final bool isObscured;
   final FormFieldValidator<String>? validator;
+  final bool mandatory;
+  final String? tooltipMessage;
 
   const _PaymentTextField({
     required this.controller,
@@ -757,6 +1042,8 @@ class _PaymentTextField extends StatelessWidget {
     this.inputFormatters,
     this.isObscured = false,
     this.validator,
+    this.mandatory = false,
+    this.tooltipMessage,
   });
 
   @override
@@ -768,6 +1055,11 @@ class _PaymentTextField extends StatelessWidget {
         children: [
           Row(
             children: [
+              if (mandatory)
+                const Text(
+                  '*',
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
               Text(
                 label,
                 style: const TextStyle(
@@ -776,7 +1068,27 @@ class _PaymentTextField extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 4),
-              const Icon(Icons.help_outline, size: 14, color: Colors.blue),
+              if (tooltipMessage != null)
+                GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(tooltipMessage!),
+                        backgroundColor: AppColors.primary,
+                      ),
+                    );
+                  },
+                  child: Tooltip(
+                    message: tooltipMessage,
+                    child: Icon(
+                      Icons.help_outline,
+                      size: 14,
+                      color: AppColors.text.withAlpha((0.6 * 255).round()),
+                    ),
+                  ),
+                )
+              else
+                const Icon(Icons.help_outline, size: 14, color: Colors.blue),
             ],
           ),
           const SizedBox(height: 4),

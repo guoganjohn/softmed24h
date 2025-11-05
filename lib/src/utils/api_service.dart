@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:softmed24h/src/models/pix_payment_response.dart';
 
 class ApiService {
   final String _baseUrl = dotenv.env['BASE_URL']!;
@@ -118,6 +119,28 @@ class ApiService {
       throw Exception('Unauthorized: Token expired or invalid.');
     } else {
       throw Exception('Failed to fetch current user: ${response.body}');
+    }
+  }
+
+  Future<PixPaymentResponse> createPixPayment(
+    String accessToken,
+    int amount,
+    String description,
+  ) async {
+    final url = Uri.parse('$_baseUrl/payments/create-pix-payment');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+      body: json.encode({'amount': amount, 'description': description}),
+    );
+
+    if (response.statusCode == 200) {
+      return PixPaymentResponse.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to create PIX payment: ${response.body}');
     }
   }
 }

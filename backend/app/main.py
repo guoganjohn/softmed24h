@@ -31,7 +31,7 @@ app.include_router(queue.router)
 app.include_router(medical_records.router)
 app.include_router(prescriptions.router)
 app.include_router(reports.router)
-app.include_router(payments.router)
+app.include_router(payments.router, prefix="/payments")
 app.include_router(users.router)
 app.include_router(transactions.router)
 

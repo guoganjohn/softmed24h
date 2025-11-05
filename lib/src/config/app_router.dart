@@ -6,12 +6,22 @@ import 'package:softmed24h/src/screens/forget_password/email_sent_screen.dart';
 import 'package:softmed24h/src/screens/forget_password/forget_password_screen.dart';
 import 'package:softmed24h/src/screens/forget_password/reset_password_screen.dart';
 import 'package:softmed24h/src/screens/forget_password/token_error_screen.dart';
-import 'package:softmed24h/src/screens/home/home_page.dart';
+import 'package:softmed24h/src/screens/home/home_screen.dart';
 import 'package:softmed24h/src/screens/landing/landing_screen.dart';
 import 'package:softmed24h/src/screens/payment/payment_screen.dart';
+import 'package:softmed24h/src/screens/minha_conta/minha_conta_screen.dart';
+import 'package:softmed24h/src/screens/agendar_especialista/agendar_especialista_screen.dart';
+import 'package:softmed24h/src/screens/iniciar_consulta/iniciar_consulta_screen.dart';
+import 'package:softmed24h/src/screens/convidar_amigos/convidar_amigos_screen.dart';
+import 'package:softmed24h/src/screens/minha_senha/minha_senha_screen.dart';
 import 'package:softmed24h/src/utils/session_manager.dart';
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter appRouter = GoRouter(
+  navigatorKey: _rootNavigatorKey,
+  initialLocation: '/',
   routes: <RouteBase>[
     GoRoute(
       path: '/',
@@ -29,12 +39,6 @@ final GoRouter appRouter = GoRouter(
       path: '/cadastro',
       builder: (BuildContext context, GoRouterState state) {
         return const RegisterScreen();
-      },
-    ),
-    GoRoute(
-      path: '/home',
-      builder: (BuildContext context, GoRouterState state) {
-        return const HomePage();
       },
     ),
     GoRoute(
@@ -64,6 +68,48 @@ final GoRouter appRouter = GoRouter(
         }
         return ResetPasswordScreen(token: token);
       },
+    ),
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      builder: (BuildContext context, GoRouterState state, Widget child) {
+        return HomePage(child: child);
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: '/home',
+          redirect: (context, state) => '/home/minha-conta',
+        ),
+        GoRoute(
+          path: '/home/minha-conta',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return const NoTransitionPage(child: MinhaContaScreen());
+          },
+        ),
+        GoRoute(
+          path: '/home/agendar-especialista',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return const NoTransitionPage(child: AgendarEspecialistaScreen());
+          },
+        ),
+        GoRoute(
+          path: '/home/iniciar-consulta',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return const NoTransitionPage(child: IniciarConsultaScreen());
+          },
+        ),
+        GoRoute(
+          path: '/home/convidar-amigos',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return const NoTransitionPage(child: ConvidarAmigosScreen());
+          },
+        ),
+        GoRoute(
+          path: '/home/minha-senha',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return const NoTransitionPage(child: MinhaSenhaScreen());
+          },
+        ),
+      ],
     ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {
