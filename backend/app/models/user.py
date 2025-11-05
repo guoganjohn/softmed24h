@@ -1,7 +1,10 @@
-from sqlalchemy import Boolean, Column, Integer, String, Date, DateTime
 from datetime import date, datetime
+
+from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String
 from sqlalchemy.orm import relationship
+
 from app.database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -30,12 +33,26 @@ class User(Base):
     password_reset_expires_at = Column(DateTime, nullable=True)
 
     medical_records = relationship("MedicalRecord", back_populates="patient")
-    prescriptions = relationship("Prescription", foreign_keys="[Prescription.patient_id]", back_populates="patient")
-    appointments_as_patient = relationship("Appointment", foreign_keys="[Appointment.patient_id]", back_populates="patient")
-    appointments_as_doctor = relationship("Appointment", foreign_keys="[Appointment.doctor_id]", back_populates="doctor")
-    prescriptions_as_prescriber = relationship("Prescription", foreign_keys="[Prescription.prescriber_id]", back_populates="prescriber")
+    prescriptions = relationship(
+        "Prescription",
+        foreign_keys="[Prescription.patient_id]",
+        back_populates="patient",
+    )
+    appointments_as_patient = relationship(
+        "Appointment", foreign_keys="[Appointment.patient_id]", back_populates="patient"
+    )
+    appointments_as_doctor = relationship(
+        "Appointment", foreign_keys="[Appointment.doctor_id]", back_populates="doctor"
+    )
+    prescriptions_as_prescriber = relationship(
+        "Prescription",
+        foreign_keys="[Prescription.prescriber_id]",
+        back_populates="prescriber",
+    )
     payments = relationship("Payment", back_populates="user")
 
     # Queue management fields
-    queue_status = Column(String, index=True, default='waiting') # e.g., 'waiting', 'in_service', 'completed', 'no_wait'
+    queue_status = Column(
+        String, index=True, default="waiting"
+    )  # e.g., 'waiting', 'in_service', 'completed', 'no_wait'
     queue_entry_time = Column(DateTime, nullable=True)

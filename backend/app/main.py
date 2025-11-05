@@ -1,21 +1,23 @@
 import os
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from app.routers import appointments, auth, queue, medical_records, prescriptions, reports, payments, users, transactions
-from app.database import engine
-from app.models import user, appointment, medical_record, prescription
-from fastapi.responses import RedirectResponse, HTMLResponse
-from google_auth_oauthlib.flow import Flow
-from google.auth.transport.requests import Request as GoogleAuthRequest
+
 from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, RedirectResponse
+from google.auth.transport.requests import Request as GoogleAuthRequest
+from google_auth_oauthlib.flow import Flow
+
+from app.database import engine
+from app.models import appointment, medical_record, prescription, user
+from app.routers import (appointments, auth, medical_records, payments,
+                         prescriptions, queue, reports, transactions, users)
+
 # user.Base.metadata.create_all(bind=engine) # NOTE: In a production environment, consider using Alembic for database migrations.
 
 app = FastAPI()
 
 # Configure CORS
-origins = [
-    "*"  # Allow all origins for development. Restrict this in production!
-]
+origins = ["*"]  # Allow all origins for development. Restrict this in production!
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,8 +44,8 @@ load_dotenv()
 # You would use a database/cache in a real application to store state/tokens
 STATE_STORE = {}
 SCOPES = [
-    'https://www.googleapis.com/auth/calendar',
-    'openid', # Always good practice to include for basic ID
+    "https://www.googleapis.com/auth/calendar",
+    "openid",  # Always good practice to include for basic ID
 ]
 
 # Client Config for the flow object
@@ -52,10 +54,11 @@ CLIENT_CONFIG = {
         "client_id": os.getenv("GOOGLE_CLIENT_ID"),
         "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token"
+        "token_uri": "https://oauth2.googleapis.com/token",
     }
 }
 REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+
 
 @app.get("/")
 def home():
@@ -70,6 +73,7 @@ def home():
         """
     )
 
+
 ## 1. Initiation Endpoint: /login/google
 @app.get("/login/google")
 def google_login_init():
@@ -77,16 +81,13 @@ def google_login_init():
     Step 1: Redirects the user to Google for consent.
     """
     flow = Flow.from_client_config(
-        CLIENT_CONFIG,
-        scopes=SCOPES,
-        redirect_uri=REDIRECT_URI
+        CLIENT_CONFIG, scopes=SCOPES, redirect_uri=REDIRECT_URI
     )
 
     # access_type='offline' ensures we get a Refresh Token
     # prompt='consent' ensures the consent screen is shown
     authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        prompt='consent'
+        access_type="offline", prompt="consent"
     )
 
     # In a real app, 'state' would be stored in a secure cookie or database
@@ -105,15 +106,16 @@ async def google_auth_callback(request: Request):
     """
     # Create the flow object from the redirect URI containing the 'code'
     flow = Flow.from_client_config(
-        CLIENT_CONFIG,
-        scopes=SCOPES,
-        redirect_uri=REDIRECT_URI
+        CLIENT_CONFIG, scopes=SCOPES, redirect_uri=REDIRECT_URI
     )
 
     # 1. State Validation (Security Check)
     state = request.query_params.get("state")
     if not state or state not in STATE_STORE:
-        raise HTTPException(status_code=400, detail="Invalid or missing state parameter. CSRF attempt detected.")
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or missing state parameter. CSRF attempt detected.",
+        )
 
     # Remove state after use
     del STATE_STORE[state]
@@ -141,9 +143,11 @@ async def google_auth_callback(request: Request):
             "message": "Authentication Successful!",
             "access_token": access_token,
             "refresh_token": refresh_token,
-            "expiry": credentials.expiry.isoformat()
+            "expiry": credentials.expiry.isoformat(),
         }
 
     except Exception as e:
         print(f"Token exchange error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to retrieve or exchange tokens.")
+        raise HTTPException(
+            status_code=500, detail="Failed to retrieve or exchange tokens."
+        )

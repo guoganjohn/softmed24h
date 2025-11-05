@@ -1,8 +1,11 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
+from datetime import datetime
+
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
+
 from app.database import Base
 from app.models.user import User
-from datetime import datetime
+
 
 class MedicalRecord(Base):
     __tablename__ = "medical_records"

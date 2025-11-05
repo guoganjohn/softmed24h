@@ -1,8 +1,11 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
+from datetime import datetime
+
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
+
 from app.database import Base
 from app.models.user import User
-from datetime import datetime
+
 
 class Prescription(Base):
     __tablename__ = "prescriptions"
@@ -14,5 +17,11 @@ class Prescription(Base):
     medication = Column(String)
     dosage = Column(String)
 
-    patient = relationship("User", foreign_keys=[patient_id], back_populates="prescriptions")
-    prescriber = relationship("User", foreign_keys=[prescriber_id], back_populates="prescriptions_as_prescriber")
+    patient = relationship(
+        "User", foreign_keys=[patient_id], back_populates="prescriptions"
+    )
+    prescriber = relationship(
+        "User",
+        foreign_keys=[prescriber_id],
+        back_populates="prescriptions_as_prescriber",
+    )

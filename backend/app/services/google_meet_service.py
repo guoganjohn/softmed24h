@@ -1,12 +1,15 @@
 import os
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-from google.auth.transport.requests import Request as GoogleAuthRequest # Needed for token refresh
 from datetime import datetime
 from typing import List
+
 from dotenv import load_dotenv
+from google.auth.transport.requests import \
+    Request as GoogleAuthRequest  # Needed for token refresh
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 load_dotenv()
+
 
 class GoogleMeetService:
     def __init__(self):
@@ -16,7 +19,14 @@ class GoogleMeetService:
         google_client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
 
         # --- Check Credentials ---
-        if not all([google_oauth_token, google_refresh_token, google_client_id, google_client_secret]):
+        if not all(
+            [
+                google_oauth_token,
+                google_refresh_token,
+                google_client_id,
+                google_client_secret,
+            ]
+        ):
             raise Exception("Missing Google API credentials in environment variables.")
 
         # --- Corrected Scope ---
@@ -33,7 +43,7 @@ class GoogleMeetService:
             client_secret=google_client_secret,
             scopes=SCOPES,
             # Set a high expiry time, as the token refresh logic below will handle it
-            expiry=datetime.now() # Start with an expired token to force immediate refresh
+            expiry=datetime.now(),  # Start with an expired token to force immediate refresh
         )
 
         # --- Force Token Refresh and Build Service ---
@@ -43,51 +53,61 @@ class GoogleMeetService:
             self.creds.refresh(GoogleAuthRequest())
 
         # Build the Google Calendar service object
-        self.service = build('calendar', 'v3', credentials=self.creds)
+        self.service = build("calendar", "v3", credentials=self.creds)
 
-    def create_meeting(self, summary: str, start_time: datetime, end_time: datetime, attendees: List[str]):
+    def create_meeting(
+        self,
+        summary: str,
+        start_time: datetime,
+        end_time: datetime,
+        attendees: List[str],
+    ):
         # This function attempts to refresh the token again just before the call,
         # providing an extra layer of protection against expiration.
         if self.creds.expired and self.creds.refresh_token:
             self.creds.refresh(GoogleAuthRequest())
 
         event = {
-            'summary': summary,
-            'start': {
-                'dateTime': start_time.isoformat(),
-                'timeZone': 'America/Sao_Paulo',
+            "summary": summary,
+            "start": {
+                "dateTime": start_time.isoformat(),
+                "timeZone": "America/Sao_Paulo",
             },
-            'end': {
-                'dateTime': end_time.isoformat(),
-                'timeZone': 'America/Sao_Paulo',
+            "end": {
+                "dateTime": end_time.isoformat(),
+                "timeZone": "America/Sao_Paulo",
             },
-            'attendees': [{'email': email} for email in attendees],
-            'conferenceData': {
+            "attendees": [{"email": email} for email in attendees],
+            "conferenceData": {
                 # This key is required to instruct Google to create a Meet conference
-                'createRequest': {
-                    'requestId': 'fastapi-meet-request-' + str(int(datetime.now().timestamp())),
-                    'conferenceSolutionKey': {
-                        'type': 'hangoutsMeet'
-                    }
+                "createRequest": {
+                    "requestId": "fastapi-meet-request-"
+                    + str(int(datetime.now().timestamp())),
+                    "conferenceSolutionKey": {"type": "hangoutsMeet"},
                 }
-            }
+            },
         }
 
         try:
             # conferenceDataVersion=1 is MANDATORY for 'conferenceData' to be processed
-            event = self.service.events().insert(
-                calendarId='primary',
-                body=event,
-                conferenceDataVersion=1,
-                sendNotifications=True
-            ).execute()
+            event = (
+                self.service.events()
+                .insert(
+                    calendarId="primary",
+                    body=event,
+                    conferenceDataVersion=1,
+                    sendNotifications=True,
+                )
+                .execute()
+            )
 
             # The meeting link is returned in the 'hangoutLink' field
-            return event.get('hangoutLink')
+            return event.get("hangoutLink")
 
         except Exception as e:
             # This is the proper place to raise an exception for the calling function
             raise Exception(f"Failed to create Google Meet event: {e}")
+
 
 # Example usage (assuming you define your datetime objects and run this in a main block)
 # from datetime import timedelta

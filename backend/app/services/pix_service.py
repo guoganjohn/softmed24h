@@ -1,14 +1,19 @@
 import os
-import requests
-from app.models.payment import Payment
-from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 
-load_dotenv() # Load environment variables
+import requests
+from dotenv import load_dotenv
+from sqlalchemy.orm import Session
+
+from app.models.payment import Payment
+
+load_dotenv()  # Load environment variables
 
 PAGARME_SECRET_KEY = os.getenv("PAGARME_SECRET_KEY")
-PAGARME_API_URL = os.getenv("PAGARME_API_URL", "https://api.pagar.me/core/v5") # Default to v5 API URL
+PAGARME_API_URL = os.getenv(
+    "PAGARME_API_URL", "https://api.pagar.me/core/v5"
+)  # Default to v5 API URL
+
 
 class PagarmeAPI:
     def __init__(self):
@@ -16,7 +21,7 @@ class PagarmeAPI:
             raise ValueError("PAGARME_SECRET_KEY environment variable not set.")
         self.headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Basic {PAGARME_SECRET_KEY}" # Pagar.me uses Basic Auth with secret key
+            "Authorization": f"Basic {PAGARME_SECRET_KEY}",  # Pagar.me uses Basic Auth with secret key
         }
 
     def create_pix_charge(self, amount: int, description: str):
@@ -26,10 +31,10 @@ class PagarmeAPI:
 
         endpoint = f"{PAGARME_API_URL}/charges"
         payload = {
-            "amount": amount, # Amount in cents
+            "amount": amount,  # Amount in cents
             "payment_method": "pix",
             "pix": {
-                "expires_in": 3600, # PIX QR Code valid for 1 hour (in seconds)
+                "expires_in": 3600,  # PIX QR Code valid for 1 hour (in seconds)
             },
             "description": description,
             # You would typically include customer information here
@@ -43,7 +48,7 @@ class PagarmeAPI:
 
         try:
             response = requests.post(endpoint, headers=self.headers, json=payload)
-            response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
+            response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
             response_data = response.json()
 
             # Extract relevant PIX data from Pagar.me response
@@ -54,13 +59,13 @@ class PagarmeAPI:
             pix_data = last_transaction.get("qr_code", {})
 
             pix_transaction_id = charge_data.get("id")
-            pix_qr_code_data = pix_data.get("qr_code_url") # Or qr_code_base64
+            pix_qr_code_data = pix_data.get("qr_code_url")  # Or qr_code_base64
             pix_status = charge_data.get("status")
 
             return {
                 "pix_transaction_id": pix_transaction_id,
                 "pix_qr_code_data": pix_qr_code_data,
-                "pix_status": pix_status
+                "pix_status": pix_status,
             }
         except requests.exceptions.RequestException as e:
             print(f"Pagar.me API request failed: {e}")
@@ -69,7 +74,9 @@ class PagarmeAPI:
             print(f"Error processing Pagar.me response: {e}")
             raise
 
+
 pagarme_api = PagarmeAPI()
+
 
 def create_pix_payment(db: Session, user_id: int, amount: int, description: str):
     # 1. Create PIX charge via Pagar.me API
@@ -79,10 +86,10 @@ def create_pix_payment(db: Session, user_id: int, amount: int, description: str)
     new_payment = Payment(
         user_id=user_id,
         start_date=datetime.utcnow(),
-        end_date=datetime.utcnow() + timedelta(days=30), # Example: 30-day subscription
+        end_date=datetime.utcnow() + timedelta(days=30),  # Example: 30-day subscription
         pix_transaction_id=pix_charge_data["pix_transaction_id"],
         pix_qr_code_data=pix_charge_data["pix_qr_code_data"],
-        pix_status=pix_charge_data["pix_status"]
+        pix_status=pix_charge_data["pix_status"],
     )
     db.add(new_payment)
     db.commit()

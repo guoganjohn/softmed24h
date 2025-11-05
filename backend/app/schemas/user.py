@@ -1,6 +1,8 @@
+from datetime import date, datetime
 from typing import List, Optional
+
 from pydantic import BaseModel, Field
-from datetime import datetime, date
+
 
 class UserBase(BaseModel):
     email: str
@@ -17,20 +19,25 @@ class UserBase(BaseModel):
     estado: Optional[str] = None
     cidade: Optional[str] = None
 
+
 class UserCreate(UserBase):
     password: str = Field(..., max_length=72)
+
 
 class UserLogin(BaseModel):
     email: str
     password: str
 
+
 class ForgotPasswordRequest(BaseModel):
     email: str
+
 
 class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str = Field(..., max_length=72)
     confirm_password: str = Field(..., max_length=72)
+
 
 class User(UserBase):
     id: int
@@ -47,11 +54,13 @@ class User(UserBase):
     class Config:
         from_attributes = True
 
+
 class UserBaseInfo(BaseModel):
     id: int
     email: str
     name: Optional[str] = None
     is_active: bool
+
 
 class UserMeResponse(BaseModel):
     id: int
@@ -61,6 +70,7 @@ class UserMeResponse(BaseModel):
     phone: Optional[str] = None
     cpf: Optional[str] = None
     has_active_payment: bool
+
 
 # Import after User is defined to avoid circular import
 from app.schemas.medical_record import MedicalRecord

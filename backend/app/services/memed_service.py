@@ -1,9 +1,11 @@
 import os
+from typing import Any, Dict, List
+
 import httpx
-from typing import List, Dict, Any
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 class MemedService:
     def __init__(self):
@@ -25,7 +27,9 @@ class MemedService:
             "client_secret": self.api_key,
         }
         try:
-            response = httpx.post(f"{self.base_url}/auth/token", headers=headers, data=data)
+            response = httpx.post(
+                f"{self.base_url}/auth/token", headers=headers, data=data
+            )
             response.raise_for_status()
             return response.json()["access_token"]
         except httpx.HTTPStatusError as e:
@@ -43,10 +47,14 @@ class MemedService:
             "medicines": medicines,
         }
         try:
-            response = httpx.post(f"{self.base_url}/prescricao", headers=headers, json=data)
+            response = httpx.post(
+                f"{self.base_url}/prescricao", headers=headers, json=data
+            )
             response.raise_for_status()
             return response.json()
         except httpx.HTTPStatusError as e:
-            raise Exception(f"Failed to create Memed prescription: {e.response.text}") from e
+            raise Exception(
+                f"Failed to create Memed prescription: {e.response.text}"
+            ) from e
         except httpx.RequestError as e:
             raise Exception(f"Failed to connect to Memed API: {e}") from e

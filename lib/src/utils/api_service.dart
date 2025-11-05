@@ -143,6 +143,31 @@ class ApiService {
       throw Exception('Failed to create PIX payment: ${response.body}');
     }
   }
+
+  Future<void> updatePassword(
+    String accessToken,
+    String currentPassword,
+    String newPassword,
+    String confirmPassword,
+  ) async {
+    final url = Uri.parse('$_baseUrl/users/me/password');
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+      body: json.encode({
+        'current_password': currentPassword,
+        'new_password': newPassword,
+        'confirm_password': confirmPassword,
+      }),
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('Failed to update password: ${response.body}');
+    }
+  }
 }
 
 class AuthResponse {

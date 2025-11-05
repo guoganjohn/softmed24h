@@ -1,17 +1,23 @@
+from datetime import datetime  # Import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from app.database import SessionLocal
-from app.models.user import User as UserModel # Explicitly import and alias User as UserModel
-from app.models.payment import Payment as PaymentModel # Import Payment model
-from datetime import datetime # Import datetime
-from app.schemas import user as user_schema
+from jose import JWTError, jwt  # Import jwt and JWTError
 from passlib.context import CryptContext
-from app.routers.auth import oauth2_scheme, SECRET_KEY, ALGORITHM # Import oauth2_scheme, SECRET_KEY, ALGORITHM
-from jose import JWTError, jwt # Import jwt and JWTError
+from sqlalchemy.orm import Session
+
+from app.database import SessionLocal
+from app.models.payment import Payment as PaymentModel  # Import Payment model
+from app.models.user import \
+    User as UserModel  # Explicitly import and alias User as UserModel
+from app.routers.auth import SECRET_KEY  # Import verify_password
+from app.routers.auth import ALGORITHM, oauth2_scheme, verify_password
+from app.schemas import password as password_schema
+from app.schemas import user as user_schema
 
 router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def get_password_hash(password: str) -> str:
     """
@@ -22,6 +28,7 @@ def get_password_hash(password: str) -> str:
         password = password[:72]
     return pwd_context.hash(password)
 
+
 # Dependency to get a database session
 def get_db():
     db = SessionLocal()
@@ -30,11 +37,15 @@ def get_db():
     finally:
         db.close()
 
+
 def get_user_by_email(db: Session, email: str):
     return db.query(UserModel).filter(UserModel.email == email).first()
 
+
 # Dependency to get the current user from the JWT token
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> UserModel:
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+) -> UserModel:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -52,15 +63,22 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     return user
 
+
 @router.get("/users/me", response_model=user_schema.UserMeResponse)
-def read_users_me(current_user: UserModel = Depends(get_current_user), db: Session = Depends(get_db)):
+def read_users_me(
+    current_user: UserModel = Depends(get_current_user), db: Session = Depends(get_db)
+):
     """
     Get the current logged-in user's information, including active payment status and phone number.
     """
-    active_payment = db.query(PaymentModel).filter(
-        PaymentModel.user_id == current_user.id,
-        PaymentModel.end_date > datetime.utcnow()
-    ).first()
+    active_payment = (
+        db.query(PaymentModel)
+        .filter(
+            PaymentModel.user_id == current_user.id,
+            PaymentModel.end_date > datetime.utcnow(),
+        )
+        .first()
+    )
     has_active_payment = active_payment is not None
 
     return {
@@ -70,8 +88,9 @@ def read_users_me(current_user: UserModel = Depends(get_current_user), db: Sessi
         "is_active": current_user.is_active,
         "phone": current_user.phone,
         "cpf": current_user.cpf,
-        "has_active_payment": has_active_payment
+        "has_active_payment": has_active_payment,
     }
+
 
 @router.post("/users/", response_model=user_schema.User)
 def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
@@ -99,3 +118,21 @@ def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+@router.put("/users/me/password", status_code=status.HTTP_204_NO_CONTENT)
+def update_password(
+    password_update: password_schema.PasswordUpdate,
+    current_user: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not verify_password(
+        password_update.current_password, current_user.hashed_password
+    ):
+        raise HTTPException(status_code=400, detail="Incorrect current password")
+    if password_update.new_password != password_update.confirm_password:
+        raise HTTPException(status_code=400, detail="New passwords do not match")
+
+    current_user.hashed_password = get_password_hash(password_update.new_password)
+    db.add(current_user)
+    db.commit()

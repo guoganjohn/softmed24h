@@ -1,8 +1,11 @@
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from app.services.queue_service import QueueService
 
 router = APIRouter()
+
 
 @router.post("/queue/add/{patient_id}")
 def add_to_queue(patient_id: int, queue_service: QueueService = Depends()):
@@ -12,8 +15,9 @@ def add_to_queue(patient_id: int, queue_service: QueueService = Depends()):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to add patient to queue: {e}"
+            detail=f"Failed to add patient to queue: {e}",
         )
+
 
 @router.delete("/queue/remove/{patient_id}")
 def remove_from_queue(patient_id: int, queue_service: QueueService = Depends()):
@@ -23,8 +27,9 @@ def remove_from_queue(patient_id: int, queue_service: QueueService = Depends()):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to remove patient from queue: {e}"
+            detail=f"Failed to remove patient from queue: {e}",
         )
+
 
 @router.get("/queue", response_model=List[int])
 def get_queue(queue_service: QueueService = Depends()):
@@ -33,8 +38,9 @@ def get_queue(queue_service: QueueService = Depends()):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to retrieve queue: {e}"
+            detail=f"Failed to retrieve queue: {e}",
         )
+
 
 @router.post("/queue/call_next/{doctor_id}", status_code=status.HTTP_200_OK)
 def call_next_patient(doctor_id: int, queue_service: QueueService = Depends()):
@@ -48,8 +54,9 @@ def call_next_patient(doctor_id: int, queue_service: QueueService = Depends()):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to call next patient: {e}"
+            detail=f"Failed to call next patient: {e}",
         )
+
 
 @router.get("/queue/stats")
 def get_queue_stats(queue_service: QueueService = Depends()):
@@ -58,5 +65,5 @@ def get_queue_stats(queue_service: QueueService = Depends()):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to retrieve queue stats: {e}"
+            detail=f"Failed to retrieve queue stats: {e}",
         )

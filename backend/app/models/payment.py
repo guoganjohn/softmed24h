@@ -1,7 +1,10 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, String
-from sqlalchemy.orm import relationship
-from app.database import Base
 from datetime import datetime
+
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
+from app.database import Base
+
 
 class Payment(Base):
     __tablename__ = "payments"

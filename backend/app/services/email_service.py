@@ -1,7 +1,8 @@
-import smtplib
 import os
-from email.mime.text import MIMEText
+import smtplib
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,6 +13,7 @@ SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 
+
 def send_reset_email(recipient_email: str, reset_link: str):
     if not all([SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD, SENDER_EMAIL]):
         print("Email sending skipped: SMTP credentials not fully configured.")
@@ -19,9 +21,9 @@ def send_reset_email(recipient_email: str, reset_link: str):
         return
 
     msg = MIMEMultipart()
-    msg['From'] = SENDER_EMAIL
-    msg['To'] = recipient_email
-    msg['Subject'] = "Password Reset Request"
+    msg["From"] = SENDER_EMAIL
+    msg["To"] = recipient_email
+    msg["Subject"] = "Password Reset Request"
 
     body = f"""
     Hello,
@@ -35,11 +37,11 @@ def send_reset_email(recipient_email: str, reset_link: str):
     Regards,
     Your App Team
     """
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText(body, "plain"))
 
     try:
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls() # Secure the connection
+            server.starttls()  # Secure the connection
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.send_message(msg)
         print(f"Password reset email sent to {recipient_email}")
