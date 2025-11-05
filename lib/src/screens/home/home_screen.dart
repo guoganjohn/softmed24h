@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Expanded(
                                 child: const Text(
-                                  'MeuMed',
+                                  'SoftMed24h',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
