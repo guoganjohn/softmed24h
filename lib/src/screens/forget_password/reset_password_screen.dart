@@ -44,6 +44,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           'Senha redefinida com sucesso! Por favor, faça login.',
           Colors.green,
         );
+        if (!mounted) return;
         context.go('/login');
       } catch (e) {
         setState(() {

@@ -139,8 +139,8 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.black.withOpacity(0),
-              Colors.black.withOpacity(0.5),
+              Colors.black.withAlpha(0),
+              Colors.black.withAlpha(128),
             ],
             stops: const [0.6, 1.0],
           ),
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontWeight: FontWeight.w900,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withAlpha(128),
                         blurRadius: 4,
                       ),
                     ],
@@ -284,40 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 200,
                   height: 40,
                   fontSize: 18,
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      final apiService = ApiService();
-                      try {
-                        final authResponse = await apiService.login(
-                          _emailController.text,
-                          _passwordController.text,
-                        );
-                        await SessionManager().saveToken(
-                          authResponse.accessToken,
-                        );
-
-                        final user = await apiService.getCurrentUser(
-                          authResponse.accessToken,
-                        );
-
-                        _showSnackBar(
-                          'Login realizado com sucesso!',
-                          Colors.green,
-                        );
-
-                        if (!user.hasActivePayment) {
-                          context.go('/payment');
-                        } else {
-                          context.go('/home');
-                        }
-                      } catch (e) {
-                        _showSnackBar(
-                          'Falha no login: ${e.toString()}',
-                          Colors.red,
-                        );
-                      }
-                    }
-                  },
+                  onPressed: _login,
                 ),
               ),
             ),
@@ -325,6 +292,42 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _login() async {
+    if (_formKey.currentState!.validate()) {
+      final apiService = ApiService();
+      try {
+        final authResponse = await apiService.login(
+          _emailController.text,
+          _passwordController.text,
+        );
+        await SessionManager().saveToken(
+          authResponse.accessToken,
+        );
+
+        final user = await apiService.getCurrentUser(
+          authResponse.accessToken,
+        );
+
+        _showSnackBar(
+          'Login realizado com sucesso!',
+          Colors.green,
+        );
+
+        if (!mounted) return;
+        if (!user.hasActivePayment) {
+          context.go('/payment');
+        } else {
+          context.go('/home');
+        }
+      } catch (e) {
+        _showSnackBar(
+          'Falha no login: ${e.toString()}',
+          Colors.red,
+        );
+      }
+    }
   }
 
   void _showSnackBar(String message, Color color) {

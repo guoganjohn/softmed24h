@@ -49,6 +49,7 @@ class _MinhaSenhaScreenState extends State<MinhaSenhaScreen> {
           _confirmPasswordController.text,
         );
 
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Password Updated Successfully!')),
         );
@@ -57,6 +58,7 @@ class _MinhaSenhaScreenState extends State<MinhaSenhaScreen> {
         _newPasswordController.clear();
         _confirmPasswordController.clear();
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to update password: $e')),
         );

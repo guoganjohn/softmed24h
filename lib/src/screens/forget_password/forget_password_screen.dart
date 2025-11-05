@@ -34,6 +34,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         setState(() {
           _isLoading = false;
         });
+        if (!mounted) return;
         context.go('/email-sent');
       } catch (e) {
         setState(() {

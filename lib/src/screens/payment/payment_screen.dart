@@ -47,8 +47,6 @@ class _PaymentScreenState extends State<PaymentScreen>
   List<String> _cities = [];
   String? _selectedState;
   String? _selectedCity;
-  String? _pixQrCodeData;
-  String? _pixTransactionId;
 
   final ViaCepService _viaCepService = ViaCepService();
   final IbgeService _ibgeService = IbgeService();
@@ -76,37 +74,31 @@ class _PaymentScreenState extends State<PaymentScreen>
   Future<void> _fetchUserData() async {
     final sessionManager = SessionManager();
     final apiService = ApiService();
+    bool shouldLogout = false;
     try {
       final token = await sessionManager.getToken();
       if (token == null) {
         await sessionManager.clearToken();
-        if (!mounted) return;
-        if (mounted) {
-          context.go('/');
+        shouldLogout = true;
+      } else {
+        final isExpired = await sessionManager.isTokenExpired();
+        if (isExpired) {
+          await sessionManager.clearToken();
+          shouldLogout = true;
+        } else {
+          final user = await apiService.getCurrentUser(token);
+          setState(() {
+            _currentUser = user;
+          });
         }
-        return;
       }
-
-      final isExpired = await sessionManager.isTokenExpired();
-      if (isExpired) {
-        await sessionManager.clearToken();
-        if (!mounted) return;
-        if (mounted) {
-          context.go('/');
-        }
-        return;
-      }
-
-      final user = await apiService.getCurrentUser(token);
-      setState(() {
-        _currentUser = user;
-      });
     } catch (e) {
       await sessionManager.clearToken();
-      if (!mounted) return;
-      if (mounted) {
-        context.go('/');
-      }
+      shouldLogout = true;
+    }
+
+    if (shouldLogout && mounted) {
+      context.go('/');
     }
   }
 
@@ -186,37 +178,38 @@ class _PaymentScreenState extends State<PaymentScreen>
         final apiService = ApiService();
         final token = await sessionManager.getToken();
         if (token == null) {
-          _showSnackBar(
-            'Sessão expirada. Por favor, faça login novamente.',
-            Colors.red,
-          );
-          if (mounted) context.go('/');
+          if (mounted) {
+            _showSnackBar(
+              'Sessão expirada. Por favor, faça login novamente.',
+              Colors.red,
+            );
+            context.go('/');
+          }
           return;
         }
 
         _showSnackBar('Gerando PIX...', AppColors.primary);
-        final pixResponse = await apiService.createPixPayment(
+        await apiService.createPixPayment(
           token,
           4990,
           "Assinatura Softmed24h",
         ); // Amount in cents
-        setState(() {
-          _pixQrCodeData = pixResponse.pixQrCodeData;
-          _pixTransactionId = pixResponse.pixTransactionId;
-        });
         _showSnackBar('PIX gerado com sucesso!', Colors.green);
       } else {
         // Handle Credit Card or Pix/Boleto payment
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Pagamento em processamento...')),
         );
         // Simulate API call delay
         Future.delayed(const Duration(seconds: 2), () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Sucesso! Simulação de pagamento concluída.'),
-            ),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Sucesso! Simulação de pagamento concluída.'),
+              ),
+            );
+          }
         });
       }
     }
@@ -252,15 +245,18 @@ class _PaymentScreenState extends State<PaymentScreen>
               fontSize: 18,
               icon: Icons.logout,
               iconSize: 20,
-              onPressed: () async {
-                await SessionManager().clearToken();
-                context.go('/');
-              },
+              onPressed: _logout,
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _logout() async {
+    await SessionManager().clearToken();
+    if (!mounted) return;
+    context.go('/');
   }
 
   @override
@@ -550,7 +546,7 @@ class _PaymentScreenState extends State<PaymentScreen>
         const SizedBox(height: 8),
         _buildReadOnlyField('Nome:', _currentUser!.name ?? 'N/A'),
         _buildReadOnlyField('Email:', _currentUser!.email),
-        _buildReadOnlyField('Celular:', _currentUser!.phone ?? 'N/A'),
+        _buildReadOnlyField('Celular:', _currentUser!.phone),
       ],
     );
   }

@@ -437,79 +437,82 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: 200,
                 height: 40,
                 fontSize: 18,
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (!_acceptTerms) {
-                      _showSnackBar(
-                        'Você deve aceitar os termos e condições',
-                        Colors.red,
-                      );
-                      return;
-                    }
-                    if (_selectedGender == null) {
-                      _showSnackBar(
-                        'Por favor, selecione seu gênero',
-                        Colors.red,
-                      );
-                      return;
-                    }
-                    // Password match check is now handled by the validator in _buildTextField
-
-                    final apiService = ApiService();
-                    try {
-                      // Reformat birthday from DD/MM/YYYY to YYYY-MM-DD
-                      final List<String> dobParts = _dobController.text.split(
-                        '/',
-                      );
-                      final String formattedBirthday =
-                          '${dobParts[2]}-${dobParts[1]}-${dobParts[0]}';
-
-                      await apiService.register(
-                        _emailController.text,
-                        _passwordController.text,
-                        _nameController.text,
-                        _selectedGender,
-                        _cpfController.text,
-                        _phoneController.text,
-                        formattedBirthday,
-                        _cepController.text,
-                        _logradouroController.text,
-                        _numeroController.text,
-                        _complementoController.text,
-                        _bairroController.text,
-                        _selectedState!,
-                        _selectedCity!,
-                      );
-
-                      // After successful registration, attempt to log in
-                      final authResponse = await apiService.login(
-                        _emailController.text,
-                        _passwordController.text,
-                      );
-
-                      // Save the token
-                      final sessionManager = SessionManager();
-                      await sessionManager.saveToken(authResponse.accessToken);
-
-                      _showSnackBar(
-                        'Cadastro realizado com sucesso! Redirecionando para pagamento.',
-                        Colors.green,
-                      );
-                      context.go('/payment');
-                    } catch (e) {
-                      _showSnackBar(
-                        'Falha no cadastro: ${e.toString()}',
-                        Colors.red,
-                      );
-                    }
-                  }
-                },
+                onPressed: _register,
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _register() async {
+    if (_formKey.currentState!.validate()) {
+      if (!_acceptTerms) {
+        _showSnackBar(
+          'Você deve aceitar os termos e condições',
+          Colors.red,
+        );
+        return;
+      }
+      if (_selectedGender == null) {
+        _showSnackBar(
+          'Por favor, selecione seu gênero',
+          Colors.red,
+        );
+        return;
+      }
+      // Password match check is now handled by the validator in _buildTextField
+
+      final apiService = ApiService();
+      try {
+        // Reformat birthday from DD/MM/YYYY to YYYY-MM-DD
+        final List<String> dobParts = _dobController.text.split(
+          '/',
+        );
+        final String formattedBirthday =
+            '${dobParts[2]}-${dobParts[1]}-${dobParts[0]}';
+
+        await apiService.register(
+          _emailController.text,
+          _passwordController.text,
+          _nameController.text,
+          _selectedGender,
+          _cpfController.text,
+          _phoneController.text,
+          formattedBirthday,
+          _cepController.text,
+          _logradouroController.text,
+          _numeroController.text,
+          _complementoController.text,
+          _bairroController.text,
+          _selectedState!,
+          _selectedCity!,
+        );
+
+        // After successful registration, attempt to log in
+        final authResponse = await apiService.login(
+          _emailController.text,
+          _passwordController.text,
+        );
+
+        // Save the token
+        final sessionManager = SessionManager();
+        await sessionManager.saveToken(authResponse.accessToken);
+
+        _showSnackBar(
+          'Cadastro realizado com sucesso! Redirecionando para pagamento.',
+          Colors.green,
+        );
+        if (!mounted) return;
+        context.go('/payment');
+      } catch (e) {
+        _showSnackBar(
+          'Falha no cadastro: ${e.toString()}',
+          Colors.red,
+        );
+      }
+    }
   }
 
   Widget _buildAddressSection() {
@@ -723,7 +726,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Icon(
                   Icons.help_outline,
                   size: 14,
-                  color: AppColors.text.withOpacity(0.6),
+                  color: AppColors.text.withAlpha(153),
                 ),
               ),
             ),
@@ -881,7 +884,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     style: TextStyle(
                       fontSize: 16,
-                      color: AppColors.text.withOpacity(0.8),
+                      color: AppColors.text.withAlpha(204),
                     ),
                   ),
                 ),
@@ -941,7 +944,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Text(
                 'Em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei 13.709, de 14 de agosto de 2018), entenda por que coletamos os seus dados.',
                 style: TextStyle(
-                  color: AppColors.text.withOpacity(0.7),
+                  color: AppColors.text.withAlpha(179),
                   fontSize: 12,
                 ),
               ),

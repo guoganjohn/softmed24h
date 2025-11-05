@@ -337,10 +337,7 @@ class _HomePageState extends State<HomePage> {
                           overflow: TextOverflow.ellipsis,
                         )
                       : null,
-                  onTap: () async {
-                    await SessionManager().clearToken();
-                    context.go('/login');
-                  },
+                  onTap: _logout,
                 ),
               ],
             ),
@@ -350,5 +347,11 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  void _logout() async {
+    await SessionManager().clearToken();
+    if (!mounted) return;
+    context.go('/login');
   }
 }
