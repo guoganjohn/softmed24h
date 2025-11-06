@@ -48,303 +48,221 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-        elevation: 0,
-        automaticallyImplyLeading: false, // No back button on home page
-      ),
-      body: Row(
-        children: [
-          // Persistent Sidebar
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300), // Animation duration
-            curve: Curves.easeInOut, // Animation curve
-            width: _isSidebarExpanded ? 250 : 60, // Dynamic width
-            color: Colors.blue[800],
-            child: Column(
-              children: <Widget>[
-                // DrawerHeader with toggle button
-                Container(
-                  height: 120, // Standard DrawerHeader height
-                  color: Colors.blue,
-                  child: _isSidebarExpanded
-                      ? Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: const Text(
-                                  'SoftMed24h',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                  ),
-                                  softWrap: false,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.white,
-                                ),
-                                padding: const EdgeInsets.only(
-                                  left: 8.0,
-                                ), // Shift right
-                                onPressed: () {
-                                  setState(() {
-                                    _isSidebarExpanded = false;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        )
-                      : Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              right: 8.0,
-                            ), // Shift right
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isSidebarExpanded = true;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 800;
 
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedIndex == 0 ? Colors.white : null,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 24, // Constrain the width of the leading icon
-                      child: Icon(
-                        Icons.person,
-                        color: _selectedIndex == 0
-                            ? Colors.blue[800]
-                            : Colors.white,
-                      ),
-                    ),
-                    title: _isSidebarExpanded
-                        ? Text(
-                            'Minha Conta',
-                            style: TextStyle(
-                              color: _selectedIndex == 0
-                                  ? Colors.blue[800]
-                                  : Colors.white,
-                            ),
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = 0;
-                      });
-                      context.go('/home/minha-conta');
-                    },
-                  ),
+        if (isMobile) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('SoftMed24h'),
+              backgroundColor: Colors.blue[800],
+              elevation: 0,
+              iconTheme: const IconThemeData(color: Colors.white),
+              titleTextStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+            drawer: Drawer(
+              child: Container(
+                color: Colors.blue[800],
+                child: _buildSidebarList(isMobile: true),
+              ),
+            ),
+            body: widget.child,
+          );
+        } else {
+          // Desktop layout
+          return Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+            ),
+            body: Row(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  width: _isSidebarExpanded ? 250 : 60,
+                  color: Colors.blue[800],
+                  child: _buildSidebarList(isMobile: false),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedIndex == 1 ? Colors.white : null,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 24, // Constrain the width of the leading icon
-                      child: Icon(
-                        Icons.calendar_today,
-                        color: _selectedIndex == 1
-                            ? Colors.blue[800]
-                            : Colors.white,
-                      ),
-                    ),
-                    title: _isSidebarExpanded
-                        ? Text(
-                            'Agendar Especialista',
-                            style: TextStyle(
-                              color: _selectedIndex == 1
-                                  ? Colors.blue[800]
-                                  : Colors.white,
-                            ),
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = 1;
-                      });
-                      context.go('/home/agendar-especialista');
-                    },
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedIndex == 2 ? Colors.white : null,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 24, // Constrain the width of the leading icon
-                      child: Icon(
-                        Icons.video_call,
-                        color: _selectedIndex == 2
-                            ? Colors.blue[800]
-                            : Colors.white,
-                      ),
-                    ),
-                    title: _isSidebarExpanded
-                        ? Text(
-                            'Iniciar Consulta Médica',
-                            style: TextStyle(
-                              color: _selectedIndex == 2
-                                  ? Colors.blue[800]
-                                  : Colors.white,
-                            ),
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = 2;
-                      });
-                      context.go('/home/iniciar-consulta');
-                    },
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedIndex == 3 ? Colors.white : null,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 24, // Constrain the width of the leading icon
-                      child: Icon(
-                        Icons.people,
-                        color: _selectedIndex == 3
-                            ? Colors.blue[800]
-                            : Colors.white,
-                      ),
-                    ),
-                    title: _isSidebarExpanded
-                        ? Text(
-                            'Convidar Amigos',
-                            style: TextStyle(
-                              color: _selectedIndex == 3
-                                  ? Colors.blue[800]
-                                  : Colors.white,
-                            ),
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = 3;
-                      });
-                      context.go('/home/convidar-amigos');
-                    },
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedIndex == 4 ? Colors.white : null,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 24, // Constrain the width of the leading icon
-                      child: Icon(
-                        Icons.lock,
-                        color: _selectedIndex == 4
-                            ? Colors.blue[800]
-                            : Colors.white,
-                      ),
-                    ),
-                    title: _isSidebarExpanded
-                        ? Text(
-                            'Minha Senha',
-                            style: TextStyle(
-                              color: _selectedIndex == 4
-                                  ? Colors.blue[800]
-                                  : Colors.white,
-                            ),
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = 4;
-                      });
-                      context.go('/home/minha-senha');
-                    },
-                  ),
-                ),
-                const Divider(color: Colors.white),
-                const Expanded(
-                  child: SizedBox(),
-                ), // Pushes the logout button to the bottom
-                ListTile(
-                  leading: SizedBox(
-                    width: 24, // Constrain the width of the leading icon
-                    child: const Icon(Icons.logout, color: Colors.white),
-                  ),
-                  title: _isSidebarExpanded
-                      ? const Text(
-                          'Sair',
-                          style: TextStyle(color: Colors.white),
-                          softWrap: false,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      : null,
-                  onTap: _logout,
-                ),
+                Expanded(child: widget.child),
               ],
             ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildSidebarList({required bool isMobile}) {
+    final bool isExpanded = isMobile ? true : _isSidebarExpanded;
+
+    void onItemTapped(int index, String route) {
+      if (isMobile) {
+        Navigator.of(context).pop(); // Close the drawer on mobile
+      }
+      setState(() {
+        _selectedIndex = index;
+      });
+      context.go(route);
+    }
+
+    return Column(
+      children: <Widget>[
+        Container(
+          height: 120,
+          color: Colors.blue,
+          child: isExpanded
+              ? Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'SoftMed24h',
+                          style: TextStyle(color: Colors.white, fontSize: 24),
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (!isMobile)
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.only(left: 8.0),
+                          onPressed: () {
+                            setState(() {
+                              _isSidebarExpanded = false;
+                            });
+                          },
+                        ),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isSidebarExpanded = true;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+        ),
+        _buildMenuItem(
+          index: 0,
+          icon: Icons.person,
+          title: 'Minha Conta',
+          isExpanded: isExpanded,
+          onTap: () => onItemTapped(0, '/home/minha-conta'),
+        ),
+        _buildMenuItem(
+          index: 1,
+          icon: Icons.calendar_today,
+          title: 'Agendar Especialista',
+          isExpanded: isExpanded,
+          onTap: () => onItemTapped(1, '/home/agendar-especialista'),
+        ),
+        _buildMenuItem(
+          index: 2,
+          icon: Icons.video_call,
+          title: 'Iniciar Consulta Médica',
+          isExpanded: isExpanded,
+          onTap: () => onItemTapped(2, '/home/iniciar-consulta'),
+        ),
+        _buildMenuItem(
+          index: 3,
+          icon: Icons.people,
+          title: 'Convidar Amigos',
+          isExpanded: isExpanded,
+          onTap: () => onItemTapped(3, '/home/convidar-amigos'),
+        ),
+        _buildMenuItem(
+          index: 4,
+          icon: Icons.lock,
+          title: 'Minha Senha',
+          isExpanded: isExpanded,
+          onTap: () => onItemTapped(4, '/home/minha-senha'),
+        ),
+        const Divider(color: Colors.white),
+        const Expanded(
+          child: SizedBox(),
+        ), // Pushes the logout button to the bottom
+        ListTile(
+          leading: const SizedBox(
+            width: 24, // Constrain the width of the leading icon
+            child: Icon(Icons.logout, color: Colors.white),
           ),
-          // Main Content
-          Expanded(child: widget.child),
-        ],
+          title: isExpanded
+              ? const Text(
+                  'Sair',
+                  style: TextStyle(color: Colors.white),
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                )
+              : null,
+          onTap: () {
+            if (isMobile) {
+              Navigator.of(context).pop();
+            }
+            _logout();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuItem({
+    required int index,
+    required IconData icon,
+    required String title,
+    required bool isExpanded,
+    required VoidCallback onTap,
+  }) {
+    final bool isSelected = _selectedIndex == index;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.white : null,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        leading: SizedBox(
+          width: 24, // Constrain the width of the leading icon
+          child: Icon(
+            icon,
+            color: isSelected ? Colors.blue[800] : Colors.white,
+          ),
+        ),
+        title: isExpanded
+            ? Text(
+                title,
+                style: TextStyle(
+                  color: isSelected ? Colors.blue[800] : Colors.white,
+                ),
+                softWrap: false,
+                overflow: TextOverflow.ellipsis,
+              )
+            : null,
+        onTap: onTap,
       ),
     );
   }

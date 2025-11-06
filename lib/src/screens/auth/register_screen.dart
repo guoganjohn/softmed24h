@@ -583,7 +583,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 tooltipMessage: 'Informe o estado do seu endereo.',
               ),
               DropdownButtonFormField<String>(
-                value: _selectedState,
+                initialValue: _selectedState,
                 items: _states.map((String state) {
                   return DropdownMenuItem<String>(
                     value: state,
@@ -609,7 +609,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 tooltipMessage: 'Informe a cidade do seu endereo.',
               ),
               DropdownButtonFormField<String>(
-                value: _selectedCity,
+                initialValue: _selectedCity,
                 items: _cities.map((String city) {
                   return DropdownMenuItem<String>(
                     value: city,

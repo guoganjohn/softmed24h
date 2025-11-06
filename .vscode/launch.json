@@ -28,7 +28,7 @@
             "deviceId": "chrome", // or "web-server" if you prefer
             "toolArgs": [
                 "--web-hostname",
-                "192.168.12.49", // or "localhost" or your IP/hostname
+                "0.0.0.0", // or "localhost" or your IP/hostname
                 "--web-port",
                 "8080" // your desired port
             ]
