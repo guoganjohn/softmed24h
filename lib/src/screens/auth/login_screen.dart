@@ -252,15 +252,18 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             // Forgot Password
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  context.go('/forgot-password');
-                },
-                child: const Text(
-                  'Esqueceu a senha?',
-                  style: TextStyle(color: AppColors.primary),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    context.go('/forgot-password');
+                  },
+                  child: const Text(
+                    'Esqueceu a senha?',
+                    style: TextStyle(color: AppColors.primary),
+                  ),
                 ),
               ),
             ),
