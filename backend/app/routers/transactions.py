@@ -15,8 +15,6 @@ from app.schemas.transaction import (FinancialSummary, Transaction,
 
 # Initialize the FastAPI router
 router = APIRouter(
-    prefix="/transactions",
-    tags=["Transactions"],
     responses={404: {"description": "Not found"}},
 )
 

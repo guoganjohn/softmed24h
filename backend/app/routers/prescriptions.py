@@ -7,7 +7,7 @@ router = APIRouter()
 from app.schemas.prescription import CreatePrescriptionRequest
 
 
-@router.post("/create-prescription")
+@router.post("/")
 def create_prescription(
     request: CreatePrescriptionRequest, memed_service: MemedService = Depends()
 ):

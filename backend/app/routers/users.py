@@ -64,7 +64,7 @@ async def get_current_user(
     return user
 
 
-@router.get("/users/me", response_model=user_schema.UserMeResponse)
+@router.get("/me", response_model=user_schema.UserMeResponse)
 def read_users_me(
     current_user: UserModel = Depends(get_current_user), db: Session = Depends(get_db)
 ):
@@ -92,7 +92,7 @@ def read_users_me(
     }
 
 
-@router.post("/users/", response_model=user_schema.User)
+@router.post("/", response_model=user_schema.User)
 def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(UserModel).filter(UserModel.email == user.email).first()
     if db_user:
@@ -120,7 +120,7 @@ def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.put("/users/me/password", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/me/password", status_code=status.HTTP_204_NO_CONTENT)
 def update_password(
     password_update: password_schema.PasswordUpdate,
     current_user: UserModel = Depends(get_current_user),

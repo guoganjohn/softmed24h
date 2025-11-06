@@ -7,7 +7,7 @@ from app.services.queue_service import QueueService
 router = APIRouter()
 
 
-@router.post("/queue/add/{patient_id}")
+@router.post("/{patient_id}")
 def add_to_queue(patient_id: int, queue_service: QueueService = Depends()):
     try:
         queue_service.add_to_queue(patient_id)
@@ -19,7 +19,7 @@ def add_to_queue(patient_id: int, queue_service: QueueService = Depends()):
         )
 
 
-@router.delete("/queue/remove/{patient_id}")
+@router.delete("/{patient_id}")
 def remove_from_queue(patient_id: int, queue_service: QueueService = Depends()):
     try:
         queue_service.remove_from_queue(patient_id)
@@ -31,7 +31,7 @@ def remove_from_queue(patient_id: int, queue_service: QueueService = Depends()):
         )
 
 
-@router.get("/queue", response_model=List[int])
+@router.get("/", response_model=List[int])
 def get_queue(queue_service: QueueService = Depends()):
     try:
         return queue_service.get_queue()
@@ -42,7 +42,7 @@ def get_queue(queue_service: QueueService = Depends()):
         )
 
 
-@router.post("/queue/call_next/{doctor_id}", status_code=status.HTTP_200_OK)
+@router.post("/call_next/{doctor_id}", status_code=status.HTTP_200_OK)
 def call_next_patient(doctor_id: int, queue_service: QueueService = Depends()):
     try:
         # The call_next_patient method in QueueService handles updating DB and Redis, creating Appointment, and generating meet link.
@@ -58,7 +58,7 @@ def call_next_patient(doctor_id: int, queue_service: QueueService = Depends()):
         )
 
 
-@router.get("/queue/stats")
+@router.get("/stats")
 def get_queue_stats(queue_service: QueueService = Depends()):
     try:
         return queue_service.get_queue_stats()

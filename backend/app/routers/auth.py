@@ -29,7 +29,7 @@ BASE_URL = os.getenv(
 )  # Default for development
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 # Dependency to get a database session

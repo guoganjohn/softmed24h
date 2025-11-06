@@ -22,7 +22,7 @@ def get_db():
         db.close()
 
 
-@router.get("/appointments", response_model=List[AppointmentSchema])
+@router.get("/", response_model=List[AppointmentSchema])
 def get_appointments(db: Session = Depends(get_db)):
     appointments = db.query(AppointmentModel).all()
     return appointments

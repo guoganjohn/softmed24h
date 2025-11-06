@@ -45,4 +45,3 @@ app.*.map.json
 .env
 backend/venv/
 /.env.development
-.vscode/launch.json
