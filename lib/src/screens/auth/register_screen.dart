@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Required for FilteringTextInputFormatter
 import 'package:go_router/go_router.dart';
+import 'package:softmed24h/src/data/network/api_client.dart';
+import 'package:softmed24h/src/data/network/app_exceptions.dart';
+import 'package:softmed24h/src/data/models/user.dart';
+import 'package:softmed24h/src/data/services/user_api_service.dart';
 import 'package:softmed24h/src/services/ibge_service.dart';
 import 'package:softmed24h/src/services/viacep_service.dart';
-import 'package:softmed24h/src/utils/api_service.dart';
 import 'package:softmed24h/src/utils/app_colors.dart';
 import 'package:softmed24h/src/utils/input_formatters.dart';
 import 'package:softmed24h/src/utils/session_manager.dart';
@@ -463,39 +466,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
       // Password match check is now handled by the validator in _buildTextField
 
-      final apiService = ApiService();
+      final apiClient = ApiClient();
+      final userApiService = UserApiService(apiClient);
+
       try {
         // Reformat birthday from DD/MM/YYYY to YYYY-MM-DD
         final List<String> dobParts = _dobController.text.split('/');
         final String formattedBirthday =
             '${dobParts[2]}-${dobParts[1]}-${dobParts[0]}';
 
-        await apiService.register(
-          _emailController.text,
-          _passwordController.text,
-          _nameController.text,
-          _selectedGender,
-          _cpfController.text,
-          _phoneController.text,
-          formattedBirthday,
-          _cepController.text,
-          _logradouroController.text,
-          _numeroController.text,
-          _complementoController.text,
-          _bairroController.text,
-          _selectedState!,
-          _selectedCity!,
+        final userCreate = UserCreate(
+          email: _emailController.text,
+          password: _passwordController.text,
+          name: _nameController.text,
+          gender: _selectedGender,
+          cpf: _cpfController.text,
+          phone: _phoneController.text,
+          birthday: DateTime.parse(formattedBirthday), // Convert to DateTime
+          cep: _cepController.text,
+          logradouro: _logradouroController.text,
+          numero: _numeroController.text,
+          complemento: _complementoController.text,
+          bairro: _bairroController.text,
+          estado: _selectedState!,
+          cidade: _selectedCity!,
         );
 
+        await userApiService.createUser(userCreate);
+
         // After successful registration, attempt to log in
-        final authResponse = await apiService.login(
-          _emailController.text,
-          _passwordController.text,
+        // TODO: Implement a dedicated AuthApiService for login
+        final authResponse = await apiClient.post(
+          '/auth/token',
+          body: {
+            'username': _emailController.text,
+            'password': _passwordController.text,
+          },
         );
 
         // Save the token
         final sessionManager = SessionManager();
-        await sessionManager.saveToken(authResponse.accessToken);
+        await sessionManager.saveToken(authResponse['access_token']);
 
         _showSnackBar(
           'Cadastro realizado com sucesso! Redirecionando para pagamento.',
@@ -503,6 +514,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         if (!mounted) return;
         context.go('/payment');
+      } on AppException catch (e) {
+        _showSnackBar('Falha no cadastro: ${e.message}', Colors.red);
       } catch (e) {
         _showSnackBar('Falha no cadastro: ${e.toString()}', Colors.red);
       }
