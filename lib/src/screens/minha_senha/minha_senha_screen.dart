@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:softmed24h/src/utils/api_service.dart';
-import 'package:softmed24h/src/utils/session_manager.dart';
+import 'package:softmed24h/src/data/network/api_client.dart';
+import 'package:softmed24h/src/data/network/app_exceptions.dart';
+import 'package:softmed24h/src/data/services/user_api_service.dart';
 
 class MinhaSenhaScreen extends StatefulWidget {
   const MinhaSenhaScreen({super.key});
@@ -37,16 +38,12 @@ class _MinhaSenhaScreenState extends State<MinhaSenhaScreen> {
       });
 
       try {
-        final token = await SessionManager().getToken();
-        if (token == null) {
-          throw Exception('Authentication token not found.');
-        }
+        final apiClient = ApiClient();
+        final userApiService = UserApiService(apiClient);
 
-        await ApiService().updatePassword(
-          token,
+        await userApiService.updatePassword(
           _currentPasswordController.text,
           _newPasswordController.text,
-          _confirmPasswordController.text,
         );
 
         if (!mounted) return;
@@ -57,6 +54,11 @@ class _MinhaSenhaScreenState extends State<MinhaSenhaScreen> {
         _currentPasswordController.clear();
         _newPasswordController.clear();
         _confirmPasswordController.clear();
+      } on AppException catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update password: ${e.message}')),
+        );
       } catch (e) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(

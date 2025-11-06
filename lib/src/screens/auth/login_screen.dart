@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:softmed24h/src/utils/api_service.dart';
+import 'package:softmed24h/src/data/network/api_client.dart';
+import 'package:softmed24h/src/data/network/app_exceptions.dart';
+import 'package:softmed24h/src/data/services/user_api_service.dart';
 import 'package:softmed24h/src/utils/app_colors.dart';
 import 'package:softmed24h/src/utils/session_manager.dart';
 import 'package:softmed24h/src/widgets/app_button.dart';
@@ -292,15 +294,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
-      final apiService = ApiService();
+      final apiClient = ApiClient();
+      final userApiService = UserApiService(apiClient);
       try {
-        final authResponse = await apiService.login(
-          _emailController.text,
-          _passwordController.text,
+        // TODO: Implement a dedicated AuthApiService for login
+        final authResponse = await apiClient.post(
+          '/auth/token',
+          body: {'username': _emailController.text, 'password': _passwordController.text},
         );
-        await SessionManager().saveToken(authResponse.accessToken);
+        await SessionManager().saveToken(authResponse['access_token']);
 
-        final user = await apiService.getCurrentUser(authResponse.accessToken);
+        final user = await userApiService.getMe();
 
         _showSnackBar('Login realizado com sucesso!', Colors.green);
 
@@ -310,6 +314,8 @@ class _LoginScreenState extends State<LoginScreen> {
         } else {
           context.go('/home');
         }
+      } on AppException catch (e) {
+        _showSnackBar('Falha no login: ${e.message}', Colors.red);
       } catch (e) {
         _showSnackBar('Falha no login: ${e.toString()}', Colors.red);
       }

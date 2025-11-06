@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:softmed24h/src/utils/api_service.dart';
+import 'package:softmed24h/src/data/network/api_client.dart';
+import 'package:softmed24h/src/data/network/app_exceptions.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String token;
@@ -33,12 +34,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         _errorMessage = null;
       });
 
-      final apiService = ApiService();
+      final apiClient = ApiClient();
       try {
-        await apiService.resetPassword(
-          widget.token,
-          _passwordController.text,
-          _confirmPasswordController.text,
+        // TODO: Implement a dedicated AuthApiService for reset password
+        await apiClient.post(
+          '/auth/reset-password',
+          body: {
+            'token': widget.token,
+            'new_password': _passwordController.text,
+            'confirm_password': _confirmPasswordController.text,
+          },
         );
         _showSnackBar(
           'Senha redefinida com sucesso! Por favor, faça login.',
@@ -46,6 +51,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         );
         if (!mounted) return;
         context.go('/login');
+      } on AppException catch (e) {
+        setState(() {
+          _errorMessage = e.message;
+        });
       } catch (e) {
         setState(() {
           _errorMessage = e.toString();

@@ -772,23 +772,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildGenderRadio(String value) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Radio<String>(
-          value: value,
-          groupValue: _selectedGender,
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedGender = newValue;
-            });
-          },
-          activeColor: AppColors.primary,
-        ),
-        Flexible(
-          child: Text(value, style: const TextStyle(color: AppColors.text)),
-        ),
-      ],
+    return RadioListTile<String>(
+      title: Text(value, style: const TextStyle(color: AppColors.text)),
+      value: value,
+      groupValue: _selectedGender,
+      onChanged: (String? newValue) {
+        setState(() {
+          _selectedGender = newValue;
+        });
+      },
+      activeColor: AppColors.primary,
     );
   }
 

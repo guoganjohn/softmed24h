@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:softmed24h/src/utils/api_service.dart';
+import 'package:softmed24h/src/data/network/api_client.dart';
+import 'package:softmed24h/src/data/network/app_exceptions.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -29,13 +30,23 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       });
 
       try {
-        final apiService = ApiService();
-        await apiService.forgotPassword(_emailController.text);
+        final apiClient = ApiClient();
+        // TODO: Implement a dedicated AuthApiService for forgot password
+        await apiClient.post(
+          '/auth/forgot-password',
+          body: {'email': _emailController.text},
+        );
         setState(() {
           _isLoading = false;
         });
         if (!mounted) return;
         context.go('/email-sent');
+      } on AppException catch (e) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage =
+              'Falha ao enviar link de redefinição: ${e.message}';
+        });
       } catch (e) {
         setState(() {
           _isLoading = false;

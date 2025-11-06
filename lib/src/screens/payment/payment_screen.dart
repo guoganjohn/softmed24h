@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:softmed24h/src/data/network/api_client.dart';
+import 'package:softmed24h/src/data/network/app_exceptions.dart';
+import 'package:softmed24h/src/data/services/user_api_service.dart';
+import 'package:softmed24h/src/data/services/payment_api_service.dart';
+import 'package:softmed24h/src/data/models/user.dart';
+import 'package:softmed24h/src/data/models/payment.dart';
 import 'package:softmed24h/src/services/ibge_service.dart';
 import 'package:softmed24h/src/services/viacep_service.dart';
-import 'package:softmed24h/src/utils/api_service.dart'; // Import ApiService
 import 'package:softmed24h/src/utils/app_colors.dart';
 import 'package:softmed24h/src/utils/input_formatters.dart';
-import 'package:softmed24h/src/utils/session_manager.dart'; // Import SessionManager
+import 'package:softmed24h/src/utils/session_manager.dart';
 import 'package:softmed24h/src/widgets/app_button.dart';
 
 // --- ENUM FOR PAYMENT METHOD ---
@@ -24,7 +29,7 @@ class _PaymentScreenState extends State<PaymentScreen>
     with SingleTickerProviderStateMixin {
   PaymentMethod _selectedPaymentMethod = PaymentMethod.creditCard;
   bool _saveCardChecked = false;
-  User? _currentUser; // Declare User state variable
+  UserMeResponse? _currentUser; // Declare User state variable
 
   // Controllers for the form fields
   final TextEditingController _nameController = TextEditingController();
@@ -73,7 +78,8 @@ class _PaymentScreenState extends State<PaymentScreen>
 
   Future<void> _fetchUserData() async {
     final sessionManager = SessionManager();
-    final apiService = ApiService();
+    final apiClient = ApiClient();
+    final userApiService = UserApiService(apiClient);
     bool shouldLogout = false;
     try {
       final token = await sessionManager.getToken();
@@ -85,8 +91,9 @@ class _PaymentScreenState extends State<PaymentScreen>
         if (isExpired) {
           await sessionManager.clearToken();
           shouldLogout = true;
-        } else {
-          final user = await apiService.getCurrentUser(token);
+        }
+        else {
+          final user = await userApiService.getMe();
           setState(() {
             _currentUser = user;
           });
@@ -174,27 +181,23 @@ class _PaymentScreenState extends State<PaymentScreen>
     if (_formKey.currentState!.validate()) {
       if (_selectedPaymentMethod == PaymentMethod.pixBoleto) {
         // Handle PIX payment
-        final sessionManager = SessionManager();
-        final apiService = ApiService();
-        final token = await sessionManager.getToken();
-        if (token == null) {
-          if (mounted) {
-            _showSnackBar(
-              'Sessão expirada. Por favor, faça login novamente.',
-              Colors.red,
-            );
-            context.go('/');
-          }
-          return;
-        }
+        final apiClient = ApiClient();
+        final paymentApiService = PaymentApiService(apiClient);
 
         _showSnackBar('Gerando PIX...', AppColors.primary);
-        await apiService.createPixPayment(
-          token,
-          4990,
-          "Assinatura Softmed24h",
-        ); // Amount in cents
-        _showSnackBar('PIX gerado com sucesso!', Colors.green);
+        try {
+          await paymentApiService.createPixPayment(
+            CreatePixPaymentRequest(
+              amount: 4990, // Amount in cents
+              description: "Assinatura Softmed24h",
+            ),
+          );
+          _showSnackBar('PIX gerado com sucesso!', Colors.green);
+        } on AppException catch (e) {
+          _showSnackBar('Falha ao gerar PIX: ${e.message}', Colors.red);
+        } catch (e) {
+          _showSnackBar('Falha ao gerar PIX: ${e.toString()}', Colors.red);
+        }
       } else {
         // Handle Credit Card or Pix/Boleto payment
         if (!mounted) return;
@@ -518,20 +521,17 @@ class _PaymentScreenState extends State<PaymentScreen>
     required String title,
     required PaymentMethod value,
   }) {
-    return ListTile(
+    return RadioListTile<PaymentMethod>(
       contentPadding: EdgeInsets.zero,
       title: Text(title, style: const TextStyle(fontSize: 14)),
-      leading: Radio<PaymentMethod>(
-        value: value,
-        groupValue: _selectedPaymentMethod,
-        onChanged: (PaymentMethod? newValue) {
-          setState(() {
-            _selectedPaymentMethod = newValue!;
-          });
-        },
-      ),
+      value: value,
+      groupValue: _selectedPaymentMethod,
+      onChanged: (PaymentMethod? newValue) {
+        setState(() {
+          _selectedPaymentMethod = newValue!;
+        });
+      },
       dense: true,
-      horizontalTitleGap: 0,
     );
   }
 
@@ -551,7 +551,7 @@ class _PaymentScreenState extends State<PaymentScreen>
     );
   }
 
-  Widget _buildReadOnlyField(String label, String value) {
+  Widget _buildReadOnlyField(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -566,7 +566,7 @@ class _PaymentScreenState extends State<PaymentScreen>
           ),
           const SizedBox(width: 4),
           Expanded(
-            child: Text(value, style: const TextStyle(color: Colors.black54)),
+            child: Text(value ?? 'N/A', style: const TextStyle(color: Colors.black54)),
           ),
         ],
       ),
