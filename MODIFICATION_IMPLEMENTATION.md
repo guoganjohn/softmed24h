@@ -19,6 +19,19 @@ This plan outlines the phased implementation of the API service layer in the Flu
 *   **Surprises:** `mkdir -p` syntax for multiple directories in PowerShell required separate commands.
 *   **Deviations:** None.
 
+### Phase 2: User Data Models and Service
+
+*   **Actions Taken:**
+    *   Created `lib/src/data/models/user.dart` with `User`, `UserCreate`, and `UserMeResponse` classes, including `@JsonSerializable` annotations and `fromJson`/`toJson` methods.
+    *   Ran `dart run build_runner build --delete-conflicting-outputs` to generate `user.g.dart`.
+    *   Created `lib/src/data/services/user_api_service.dart` with `UserApiService` class, `ApiClient` dependency, and `getMe`, `createUser`, `updatePassword` methods.
+    *   Ran `dart_fix` (no fixes needed).
+    *   Ran `analyze_files` (same non-critical issues as Phase 1).
+    *   Ran `dart_format` (formatted new file).
+*   **Learnings:** Successfully translated Pydantic schemas to Dart models with `json_serializable`. The `_getToken()` placeholder in `ApiClient` is still a pending item.
+*   **Surprises:** None.
+*   **Deviations:** None.
+
 ## Implementation Phases
 
 ### Phase 1: Setup and Base API Client
@@ -38,8 +51,8 @@ This plan outlines the phased implementation of the API service layer in the Flu
     *   [x] Run the `dart_fix` tool to clean up the code.
     *   [x] Run the `analyze_files` tool one more time and fix any issues.
     *   [x] Run `dart_format` to make sure that the formatting is correct.
-    *   [ ] Re-read the `MODIFICATION_IMPLEMENTATION.md` file to see what, if anything, has changed in the implementation plan, and if it has changed, take care of anything the changes imply.
-    *   [ ] Update the `MODIFICATION_IMPLEMENTATION.md` file with the current state, including any learnings, surprises, or deviations in the Journal section. Check off any checkboxes of items that have been completed.
+    *   [x] Re-read the `MODIFICATION_IMPLEMENTATION.md` file to see what, if anything, has changed in the implementation plan, and if it has changed, take care of anything the changes imply.
+    *   [x] Update the `MODIFICATION_IMPLEMENTATION.md` file with the current state, including any learnings, surprises, or deviations in the Journal section. Check off any checkboxes of items that have been completed.
     *   [ ] Use `git diff` to verify the changes that have been made, and create a suitable commit message for any changes, following any guidelines you have about commit messages. Be sure to properly escape dollar signs and backticks, and present the change message to the user for approval.
     *   [ ] Wait for approval. Don't commit the changes or move on to the next phase of implementation until the user approves the commit.
     *   [ ] After committing the change, if an app is running, use the `hot_reload` tool to reload it.
@@ -48,16 +61,16 @@ This plan outlines the phased implementation of the API service layer in the Flu
 
 *   **Goal:** Implement data models and API service for user-related operations.
 *   **Tasks:**
-    *   [ ] Create `lib/src/data/models/user.dart`:
+    *   [x] Create `lib/src/data/models/user.dart`:
         *   Define `User` and `UserCreate` classes with `@JsonSerializable` annotations.
         *   Implement `fromJson` and `toJson` factory methods.
-    *   [ ] Run `dart run build_runner build --delete-conflicting-outputs` to generate `user.g.dart`.
-    *   [ ] Create `lib/src/data/services/user_api_service.dart`:
+    *   [x] Run `dart run build_runner build --delete-conflicting-outputs` to generate `user.g.dart`.
+    *   [x] Create `lib/src/data/services/user_api_service.dart`:
         *   Implement `UserApiService` with `ApiClient` dependency.
         *   Implement `getMe`, `createUser`, `updatePassword` methods.
-    *   [ ] Run the `dart_fix` tool to clean up the code.
-    *   [ ] Run the `analyze_files` tool one more time and fix any issues.
-    *   [ ] Run `dart_format` to make sure that the formatting is correct.
+    *   [x] Run the `dart_fix` tool to clean up the code.
+    *   [x] Run the `analyze_files` tool one more time and fix any issues.
+    *   [x] Run `dart_format` to make sure that the formatting is correct.
     *   [ ] Re-read the `MODIFICATION_IMPLEMENTATION.md` file to see what, if anything, has changed in the implementation plan, and if it has changed, take care of anything the changes imply.
     *   [ ] Update the `MODIFICATION_IMPLEMENTATION.md` file with the current state, including any learnings, surprises, or deviations in the Journal section. Check off any checkboxes of items that have been completed.
     *   [ ] Use `git diff` to verify the changes that have been made, and create a suitable commit message for any changes, following any guidelines you have about commit messages. Be sure to properly escape dollar signs and backticks, and present the change message to the user for approval.
