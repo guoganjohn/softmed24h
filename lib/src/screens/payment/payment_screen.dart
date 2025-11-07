@@ -91,8 +91,7 @@ class _PaymentScreenState extends State<PaymentScreen>
         if (isExpired) {
           await sessionManager.clearToken();
           shouldLogout = true;
-        }
-        else {
+        } else {
           final user = await userApiService.getMe();
           setState(() {
             _currentUser = user;
@@ -566,7 +565,10 @@ class _PaymentScreenState extends State<PaymentScreen>
           ),
           const SizedBox(width: 4),
           Expanded(
-            child: Text(value ?? 'N/A', style: const TextStyle(color: Colors.black54)),
+            child: Text(
+              value ?? 'N/A',
+              style: const TextStyle(color: Colors.black54),
+            ),
           ),
         ],
       ),

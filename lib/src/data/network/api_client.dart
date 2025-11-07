@@ -2,19 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:developer' as developer;
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:softmed24h/src/data/network/app_exceptions.dart';
+import 'package:softmed24h/src/utils/session_manager.dart';
 
 class ApiClient {
-  final String _baseUrl =
-      "http://localhost:8000"; // Replace with your actual API base URL
-
+  final String _baseUrl = dotenv.env['BASE_URL']!;
   // Placeholder for token retrieval. Implement secure storage here.
   Future<String?> _getToken() async {
-    // Example: Retrieve token from SharedPreferences or secure storage
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // return prefs.getString('jwt_token');
-    return null; // For now, return null. Implement actual token retrieval.
+    return await SessionManager().getToken();
   }
 
   Map<String, String> _getHeaders(String? token) {
@@ -87,6 +84,31 @@ class ApiClient {
       throw FetchDataException('HTTP Client Error: ${e.message}');
     } catch (e) {
       developer.log('POST request failed: $e', name: 'ApiClient', error: e);
+      rethrow;
+    }
+  }
+
+  Future<dynamic> postUrlencoded(
+    String path, {
+    Map<String, String>? body,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl$path'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: body,
+      );
+      return _processResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    } on http.ClientException catch (e) {
+      throw FetchDataException('HTTP Client Error: ${e.message}');
+    } catch (e) {
+      developer.log(
+        'POST urlencoded request failed: $e',
+        name: 'ApiClient',
+        error: e,
+      );
       rethrow;
     }
   }

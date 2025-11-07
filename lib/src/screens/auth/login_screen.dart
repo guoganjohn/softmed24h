@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:softmed24h/src/data/network/api_client.dart';
 import 'package:softmed24h/src/data/network/app_exceptions.dart';
+import 'package:softmed24h/src/data/services/auth_api_service.dart';
 import 'package:softmed24h/src/data/services/user_api_service.dart';
 import 'package:softmed24h/src/utils/app_colors.dart';
 import 'package:softmed24h/src/utils/session_manager.dart';
@@ -295,14 +297,14 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() async {
     if (_formKey.currentState!.validate()) {
       final apiClient = ApiClient();
+      final authApiService = AuthApiService(apiClient);
       final userApiService = UserApiService(apiClient);
       try {
-        // TODO: Implement a dedicated AuthApiService for login
-        final authResponse = await apiClient.post(
-          '/auth/token',
-          body: {'username': _emailController.text, 'password': _passwordController.text},
+        final authResponse = await authApiService.login(
+          _emailController.text,
+          _passwordController.text,
         );
-        await SessionManager().saveToken(authResponse['access_token']);
+        await SessionManager().saveToken(authResponse.accessToken);
 
         final user = await userApiService.getMe();
 

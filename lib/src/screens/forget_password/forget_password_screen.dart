@@ -44,8 +44,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       } on AppException catch (e) {
         setState(() {
           _isLoading = false;
-          _errorMessage =
-              'Falha ao enviar link de redefinição: ${e.message}';
+          _errorMessage = 'Falha ao enviar link de redefinição: ${e.message}';
         });
       } catch (e) {
         setState(() {
