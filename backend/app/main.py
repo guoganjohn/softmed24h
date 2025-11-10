@@ -11,6 +11,7 @@ from app.routers import (
     queue,
     reports,
     transactions,
+    doctors,
 )
 
 app = FastAPI()
@@ -35,6 +36,7 @@ app.include_router(prescriptions.router, prefix="/prescriptions", tags=["prescri
 app.include_router(queue.router, prefix="/queue", tags=["queue"])
 app.include_router(reports.router, prefix="/reports", tags=["reports"])
 app.include_router(transactions.router, prefix="/transactions", tags=["transactions"])
+app.include_router(doctors.router, prefix="/doctors", tags=["doctors"])
 
 @app.get("/")
 async def root():

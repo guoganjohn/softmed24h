@@ -1,9 +1,17 @@
+import enum
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Enum as EnumDB
 from sqlalchemy.orm import relationship
 
 from app.database import Base
+
+
+class Role(str, enum.Enum):
+    SUPERADMIN = "superadmin"
+    ADMIN = "admin"
+    CUSTOMER = "customer"
+    DOCTOR = "doctor"
 
 
 class User(Base):
@@ -13,6 +21,7 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
+    role = Column(EnumDB(Role), default=Role.CUSTOMER, nullable=False)
 
     # New fields
     name = Column(String, index=True)
@@ -27,6 +36,12 @@ class User(Base):
     bairro = Column(String)
     estado = Column(String)
     cidade = Column(String)
+
+    # Doctor-specific fields
+    crm = Column(String, nullable=True)
+    uf_crm = Column(String, nullable=True)
+    bank_information = Column(String, nullable=True)
+    attached_document = Column(String, nullable=True)
 
     # Password reset fields
     password_reset_token = Column(String, nullable=True)

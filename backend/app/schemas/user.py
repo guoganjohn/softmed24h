@@ -3,6 +3,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+from app.models.user import Role
+
 
 class UserBase(BaseModel):
     email: str
@@ -18,6 +20,13 @@ class UserBase(BaseModel):
     bairro: Optional[str] = None
     estado: Optional[str] = None
     cidade: Optional[str] = None
+    role: Optional[Role] = None
+
+    # Doctor-specific fields
+    crm: Optional[str] = None
+    uf_crm: Optional[str] = None
+    bank_information: Optional[str] = None
+    attached_document: Optional[str] = None
 
 
 class UserCreate(UserBase):
@@ -42,6 +51,7 @@ class ResetPasswordRequest(BaseModel):
 class User(UserBase):
     id: int
     is_active: bool
+    role: Role
     logradouro: Optional[str] = None
     numero: Optional[str] = None
     complemento: Optional[str] = None
@@ -60,6 +70,7 @@ class UserBaseInfo(BaseModel):
     email: str
     name: Optional[str] = None
     is_active: bool
+    role: Role
 
 
 class UserMeResponse(BaseModel):
@@ -70,6 +81,13 @@ class UserMeResponse(BaseModel):
     phone: Optional[str] = None
     cpf: Optional[str] = None
     has_active_payment: bool
+    role: Role
+
+    # Doctor-specific fields
+    crm: Optional[str] = None
+    uf_crm: Optional[str] = None
+    bank_information: Optional[str] = None
+    attached_document: Optional[str] = None
 
 
 # Import after User is defined to avoid circular import
