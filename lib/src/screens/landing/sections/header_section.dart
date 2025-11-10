@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:softmed24h/src/utils/app_colors.dart';
 import 'package:softmed24h/src/widgets/app_button.dart';
+import 'package:web/web.dart' as web;
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
@@ -53,7 +53,8 @@ class HeaderSection extends StatelessWidget {
                       children: [
                         TextButton(
                           onPressed: () {
-                            context.go('/login');
+                            web.window.location.href =
+                                'https://cliente.softmed24h.com/login';
                           },
                           child: const Text(
                             'ENTRAR',
@@ -67,7 +68,8 @@ class HeaderSection extends StatelessWidget {
                           height: 36,
                           fontSize: 14,
                           onPressed: () {
-                            context.go('/cadastro');
+                            web.window.location.href =
+                                'https://cliente.softmed24h.com/cadastro';
                           },
                         ),
                       ],
@@ -117,7 +119,8 @@ class HeaderSection extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () {
-                              context.go('/login');
+                              web.window.location.href =
+                                  'https://cliente.softmed24h.com/login';
                             },
                             child: const Text(
                               'ENTRAR',
@@ -131,7 +134,8 @@ class HeaderSection extends StatelessWidget {
                             height: 36,
                             fontSize: 14,
                             onPressed: () {
-                              context.go('/cadastro');
+                              web.window.location.href =
+                                  'https://cliente.softmed24h.com/cadastro';
                             },
                           ),
                         ],
@@ -241,7 +245,8 @@ class HeaderSection extends StatelessWidget {
                               const SizedBox(height: 10),
                               ElevatedButton(
                                 onPressed: () {
-                                  context.go('/register');
+                                  web.window.location.href =
+                                      'https://cliente.softmed24h.com/cadastro';
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.secondary,
@@ -335,7 +340,8 @@ class HeaderSection extends StatelessWidget {
                                 const SizedBox(height: 10),
                                 ElevatedButton(
                                   onPressed: () {
-                                    context.go('/register');
+                                    web.window.location.href =
+                                        'https://cliente.softmed24h.com/cadastro';
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.secondary,

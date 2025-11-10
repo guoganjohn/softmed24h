@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:softmed24h/src/utils/app_colors.dart';
+import 'package:web/web.dart' as web;
 
 class TestimonialSection extends StatelessWidget {
   const TestimonialSection({super.key});
@@ -34,7 +34,8 @@ class TestimonialSection extends StatelessWidget {
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
-              context.go('/cadastro');
+              web.window.location.href =
+                  'https://cliente.softmed24h.com/cadastro';
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.secondary,
