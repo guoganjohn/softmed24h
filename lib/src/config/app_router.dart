@@ -7,7 +7,6 @@ import 'package:softmed24h/src/screens/forget_password/forget_password_screen.da
 import 'package:softmed24h/src/screens/forget_password/reset_password_screen.dart';
 import 'package:softmed24h/src/screens/forget_password/token_error_screen.dart';
 import 'package:softmed24h/src/screens/home/home_screen.dart';
-import 'package:softmed24h/src/screens/landing/landing_screen.dart';
 import 'package:softmed24h/src/screens/payment/payment_screen.dart';
 import 'package:softmed24h/src/screens/minha_conta/minha_conta_screen.dart';
 import 'package:softmed24h/src/screens/agendar_especialista/agendar_especialista_screen.dart';
@@ -26,7 +25,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const LandingPage();
+        return const LoginScreen();
       },
     ),
     GoRoute(

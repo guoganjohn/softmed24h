@@ -54,37 +54,32 @@ class _LoginScreenState extends State<LoginScreen> {
             // Logo Placeholder (e.g., Image.asset('images/logo.png'))
             MouseRegion(
               cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  context.go('/');
-                },
-                child: Row(
-                  children: [
-                    Image.asset('assets/images/logo.png', height: 40),
-                    const SizedBox(width: 10),
-                    if (!isSmallScreen)
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'SoftMed24h',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/logo.png', height: 40),
+                  const SizedBox(width: 10),
+                  if (!isSmallScreen)
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'SoftMed24h',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
-                          Text(
-                            'Nosso plano é a sua saúde',
-                            style: TextStyle(
-                              color: AppColors.text,
-                              fontSize: 12,
-                            ),
+                        ),
+                        Text(
+                          'Nosso plano é a sua saúde',
+                          style: TextStyle(
+                            color: AppColors.text,
+                            fontSize: 12,
                           ),
-                        ],
-                      ),
-                  ],
-                ),
+                        ),
+                      ],
+                    ),
+                ],
               ),
             ),
             const Spacer(),
