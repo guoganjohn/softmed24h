@@ -92,7 +92,7 @@ def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.put("/me/password", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/me/password", status_code=status.HTTP_200_OK)
 def update_password(
     password_update: password_schema.PasswordUpdate,
     current_user: UserModel = Depends(get_current_user),
@@ -104,5 +104,6 @@ def update_password(
         raise HTTPException(status_code=400, detail="Incorrect current password")
 
     current_user.hashed_password = get_password_hash(password_update.new_password)
-    db.add(current_user)
+    db.merge(current_user)
     db.commit()
+    return {"message": "Password updated successfully."}
