@@ -1,16 +1,13 @@
-from datetime import datetime  # Import datetime
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from jose import JWTError, jwt  # Import jwt and JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
-from app.models.payment import Payment as PaymentModel  # Import Payment model
-from app.models.user import \
-    User as UserModel  # Explicitly import and alias User as UserModel
-from app.routers.auth import SECRET_KEY  # Import verify_password
-from app.routers.auth import ALGORITHM, oauth2_scheme, verify_password
+from app.models.payment import Payment as PaymentModel
+from app.models.user import User as UserModel
+from app.routers.auth import get_current_user, verify_password
 from app.schemas import password as password_schema
 from app.schemas import user as user_schema
 
@@ -38,32 +35,6 @@ def get_db():
         db.close()
 
 
-def get_user_by_email(db: Session, email: str):
-    return db.query(UserModel).filter(UserModel.email == email).first()
-
-
-# Dependency to get the current user from the JWT token
-async def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> UserModel:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-    user = get_user_by_email(db, email=email)
-    if user is None:
-        raise credentials_exception
-    return user
-
-
 @router.get("/me", response_model=user_schema.UserMeResponse)
 def read_users_me(
     current_user: UserModel = Depends(get_current_user), db: Session = Depends(get_db)
@@ -89,6 +60,7 @@ def read_users_me(
         "phone": current_user.phone,
         "cpf": current_user.cpf,
         "has_active_payment": has_active_payment,
+        "role": current_user.role,
     }
 
 
@@ -130,8 +102,6 @@ def update_password(
         password_update.current_password, current_user.hashed_password
     ):
         raise HTTPException(status_code=400, detail="Incorrect current password")
-    if password_update.new_password != password_update.confirm_password:
-        raise HTTPException(status_code=400, detail="New passwords do not match")
 
     current_user.hashed_password = get_password_hash(password_update.new_password)
     db.add(current_user)

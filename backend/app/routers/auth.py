@@ -12,6 +12,8 @@ from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
 from app.models.user import User as UserModel
+from app.models.payment import Payment as PaymentModel
+from app.schemas.token import TokenResponse
 from app.schemas.user import (ForgotPasswordRequest, ResetPasswordRequest,
                               UserLogin)
 from app.services.email_service import send_reset_email
@@ -56,7 +58,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-@router.post("/token", response_model=dict)
+@router.post("/token", response_model=TokenResponse)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
@@ -67,11 +69,43 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": user.email, "name": user.name, "role": user.role.value}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    active_payment = (
+        db.query(PaymentModel)
+        .filter(
+            PaymentModel.user_id == user.id,
+            PaymentModel.end_date > datetime.utcnow(),
+        )
+        .first()
+    )
+    has_active_payment = active_payment is not None
+
+    user_response = {
+        "id": user.id,
+        "email": user.email,
+        "name": user.name,
+        "is_active": user.is_active,
+        "phone": user.phone,
+        "cpf": user.cpf,
+        "birthday": user.birthday,
+        "has_active_payment": has_active_payment,
+        "role": user.role,
+        "crm": user.crm,
+        "uf_crm": user.uf_crm,
+        "bank_information": user.bank_information,
+        "attached_document": user.attached_document,
+    }
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user_response,
+    }
 
 
 @router.post("/forgot-password", status_code=status.HTTP_200_OK)
@@ -133,3 +167,29 @@ async def reset_password(request: ResetPasswordRequest, db: Session = Depends(ge
     db.refresh(user)
 
     return {"message": "Password has been reset successfully."}
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(UserModel).filter(UserModel.email == email).first()
+
+
+# Dependency to get the current user from the JWT token
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+) -> UserModel:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    user = get_user_by_email(db, email=email)
+    if user is None:
+        raise credentials_exception
+    return user

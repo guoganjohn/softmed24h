@@ -17,13 +17,13 @@ from app.routers import (
 app = FastAPI()
 
 # Configure CORS
-origins = ["*"]  # Allow all origins for development. Restrict this in production!
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
