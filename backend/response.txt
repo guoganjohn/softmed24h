@@ -1,0 +1,19 @@
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteWxsZXIyN0Bob3RtYWlsLmNvbSIsIm5hbWUiOiJ0aGFsZXMiLCJyb2xlIjoiZG9jdG9yIiwiZXhwIjoxNzYyOTIwODQwfQ.NOZPQjbNcXueM0fC1RNP_sY3QHdg38YT8jKqvv-lQuI",
+    "token_type": "bearer",
+    "user": {
+        "id": 14,
+        "email": "myller27@hotmail.com",
+        "name": "thales",
+        "is_active": false,
+        "phone": "(12) 34567-8900",
+        "cpf": "085.302.054-05",
+        "has_active_payment": false,
+        "role": "doctor",
+        "crm": "1234567890",
+        "uf_crm": "MA",
+        "bank_information": null,
+        "attached_document": null,
+        "referral_code": null
+    }
+}

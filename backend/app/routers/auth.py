@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models.user import User as UserModel
 from app.models.payment import Payment as PaymentModel
+from app.schemas import user as user_schema
 from app.schemas.token import TokenResponse
 from app.schemas.user import (ForgotPasswordRequest, ResetPasswordRequest,
                               UserLogin)
@@ -27,7 +28,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 BASE_URL = os.getenv(
-    "FRONTEND_BASE_URL", "http://localhost:3000"
+    "FRONTEND_BASE_URL", "http://localhost:8000"
 )  # Default for development
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -85,27 +86,31 @@ async def login_for_access_token(
     )
     has_active_payment = active_payment is not None
 
-    user_response = {
-        "id": user.id,
-        "email": user.email,
-        "name": user.name,
-        "is_active": user.is_active,
-        "phone": user.phone,
-        "cpf": user.cpf,
-        "birthday": user.birthday,
-        "has_active_payment": has_active_payment,
-        "role": user.role,
-        "crm": user.crm,
-        "uf_crm": user.uf_crm,
-        "bank_information": user.bank_information,
-        "attached_document": user.attached_document,
-    }
+    user_response = user_schema.UserMeResponse(
+        id=user.id,
+        email=user.email,
+        name=user.name,
+        is_active=user.is_active,
+        phone=user.phone,
+        cpf=user.cpf,
+        birthday=user.birthday,
+        gender=user.gender,
+        has_active_payment=has_active_payment,
+        role=user.role,
+        crm=user.crm,
+        uf_crm=user.uf_crm,
+        bank_information=user.bank_information,
+        professional_card_document=user.professional_card_document,
+        selfie_document=user.selfie_document,
+        proof_of_residence_document=user.proof_of_residence_document,
+        referral_code=user.referral_code,
+    )
 
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user": user_response,
-    }
+    return TokenResponse(
+        access_token=access_token,
+        token_type="bearer",
+        user=user_response,
+    )
 
 
 @router.post("/forgot-password", status_code=status.HTTP_200_OK)

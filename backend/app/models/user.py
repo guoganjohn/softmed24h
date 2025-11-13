@@ -41,7 +41,10 @@ class User(Base):
     crm = Column(String, nullable=True)
     uf_crm = Column(String, nullable=True)
     bank_information = Column(String, nullable=True)
-    attached_document = Column(String, nullable=True)
+    professional_card_document = Column(String, nullable=True)
+    selfie_document = Column(String, nullable=True)
+    proof_of_residence_document = Column(String, nullable=True)
+    referral_code = Column(String, unique=True, nullable=True)
 
     # Password reset fields
     password_reset_token = Column(String, nullable=True)

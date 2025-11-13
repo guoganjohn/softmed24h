@@ -1,0 +1,69 @@
+INFO:     192.168.12.49:63128 - "PUT /users/me/documents HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 399, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\fastapi\applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\middleware\errors.py", line 187, in __call__
+    raise exc
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)       
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)        
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\fastapi\routing.py", line 214, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\starlette\concurrency.py", line 39, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\MeuMed\gemini\softmed24h\backend\app\routers\users.py", line 128, in update_user_documents
+    db.refresh(current_user)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\sqlalchemy\orm\session.py", line 3143, in refresh
+    self._expire_state(state, attribute_names)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\sqlalchemy\orm\session.py", line 3269, in _expire_state
+    self._validate_persistent(state)
+  File "c:\Users\Administrator\AppData\Local\Python\pythoncore-3.11-64\Lib\site-packages\sqlalchemy\orm\session.py", line 4138, in _validate_persistent
+    raise sa_exc.InvalidRequestError(
+sqlalchemy.exc.InvalidRequestError: Instance '<User at 0x142d51a8a10>' is not persistent within this Session

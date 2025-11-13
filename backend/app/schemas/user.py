@@ -26,11 +26,18 @@ class UserBase(BaseModel):
     crm: Optional[str] = None
     uf_crm: Optional[str] = None
     bank_information: Optional[str] = None
-    attached_document: Optional[str] = None
+    professional_card_document: Optional[str] = None
+    selfie_document: Optional[str] = None
+    proof_of_residence_document: Optional[str] = None
+    referral_code: Optional[str] = None
 
 
 class UserCreate(UserBase):
     password: str = Field(..., max_length=72)
+
+
+class UserUpdate(UserBase):
+    pass
 
 
 class UserLogin(BaseModel):
@@ -80,6 +87,8 @@ class UserMeResponse(BaseModel):
     is_active: bool
     phone: Optional[str] = None
     cpf: Optional[str] = None
+    birthday: Optional[date] = None
+    gender: Optional[str] = None
     has_active_payment: bool
     role: Role
 
@@ -87,7 +96,15 @@ class UserMeResponse(BaseModel):
     crm: Optional[str] = None
     uf_crm: Optional[str] = None
     bank_information: Optional[str] = None
-    attached_document: Optional[str] = None
+    professional_card_document: Optional[str] = None
+    selfie_document: Optional[str] = None
+    proof_of_residence_document: Optional[str] = None
+    referral_code: Optional[str] = None
+
+
+
+class ReferralCodeResponse(BaseModel):
+    referral_code: str
 
 
 # Import after User is defined to avoid circular import
@@ -95,3 +112,4 @@ from app.schemas.medical_record import MedicalRecord
 from app.schemas.prescription import Prescription
 
 User.update_forward_refs()
+

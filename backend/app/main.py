@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app import models
 from app.routers import (
     users,
@@ -15,6 +16,9 @@ from app.routers import (
 )
 
 app = FastAPI()
+
+# Mount the uploads directory to serve static files
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # Configure CORS
 origins = ["*"]
