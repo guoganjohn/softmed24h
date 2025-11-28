@@ -51,6 +51,8 @@ class HowItWorksStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MyColors>()!;
+
     return SizedBox(
       width: 300, // Fixed width for items in Wrap layout
       child: Padding(
@@ -66,7 +68,7 @@ class HowItWorksStep extends StatelessWidget {
               ), // Push the box down to make space for the circle
               padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: colors.primaryGreen,
                 borderRadius: BorderRadius.circular(8),
               ),
               height: 180, // Fixed height for visual consistency
@@ -88,9 +90,9 @@ class HowItWorksStep extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: colors.primaryGreen,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.secondary, width: 1),
+                  border: Border.all(color: colors.primaryBlue!, width: 1),
                 ),
                 child: Center(
                   child: Text(

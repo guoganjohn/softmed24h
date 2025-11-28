@@ -13,11 +13,13 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MyColors>()!;
+
     return Scaffold(
-      backgroundColor: AppColors.secondary,
+      backgroundColor: colors.primaryBlue,
       body: SingleChildScrollView(
         child: Column(
-          children: const [
+          children: [
             HeaderSection(),
             PlatformHighlightSection(),
             MediaSection(),

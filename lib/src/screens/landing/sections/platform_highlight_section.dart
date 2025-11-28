@@ -6,9 +6,11 @@ class PlatformHighlightSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MyColors>()!;
+
     return Container(
       padding: const EdgeInsets.all(32),
-      color: AppColors.secondary,
+      color: colors.primaryBlue,
       child: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth < 814) {
@@ -19,7 +21,7 @@ class PlatformHighlightSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: constraints.maxWidth < 400 ? 24 : 34,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: colors.primaryGreen,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -37,7 +39,7 @@ class PlatformHighlightSection extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 34,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+                      color: colors.primaryGreen,
                     ),
                     textAlign: TextAlign.center,
                   ),

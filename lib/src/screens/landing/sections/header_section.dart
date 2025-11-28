@@ -8,8 +8,9 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MyColors>()!;
     return Container(
-      color: AppColors.primary,
+      color: colors.primaryGreen,
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
       child: Column(
         children: [
@@ -18,7 +19,7 @@ class HeaderSection extends StatelessWidget {
             builder: (context, constraints) {
               // Navigation bar content should be constrained in the same way as the hero content for alignment.
               final navContent = Container(
-                color: AppColors.secondary,
+                color: colors.primaryBlue,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,13 +28,13 @@ class HeaderSection extends StatelessWidget {
                       children: [
                         Image.asset('assets/images/logo.png', height: 40),
                         const SizedBox(width: 10),
-                        const Column(
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'SoftMed24h',
                               style: TextStyle(
-                                color: AppColors.primary,
+                                color: colors.primaryGreen,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),
@@ -41,7 +42,7 @@ class HeaderSection extends StatelessWidget {
                             Text(
                               'Nosso plano é a sua saúde',
                               style: TextStyle(
-                                color: AppColors.text,
+                                color: Colors.black,
                                 fontSize: 12,
                               ),
                             ),
@@ -56,9 +57,9 @@ class HeaderSection extends StatelessWidget {
                             web.window.location.href =
                                 'https://cliente.softmed24h.com/login';
                           },
-                          child: const Text(
+                          child: Text(
                             'ENTRAR',
-                            style: TextStyle(color: AppColors.primary),
+                            style: TextStyle(color: colors.primaryGreen),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -81,7 +82,7 @@ class HeaderSection extends StatelessWidget {
               if (constraints.maxWidth < 600) {
                 // Mobile Layout: Logo on top, buttons below
                 return Container(
-                  color: AppColors.secondary,
+                  color: colors.primaryBlue,
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: Column(
                     children: [
@@ -91,13 +92,13 @@ class HeaderSection extends StatelessWidget {
                         children: [
                           Image.asset('assets/images/logo.png', height: 40),
                           const SizedBox(width: 10),
-                          const Column(
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'MeuMed',
                                 style: TextStyle(
-                                  color: AppColors.primary,
+                                  color: colors.primaryGreen,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                 ),
@@ -105,7 +106,7 @@ class HeaderSection extends StatelessWidget {
                               Text(
                                 'Nosso plano é a sua saúde',
                                 style: TextStyle(
-                                  color: AppColors.text,
+                                  color: Colors.black, // AppColors.text replaced with Colors.black
                                   fontSize: 12,
                                 ),
                               ),
@@ -122,9 +123,9 @@ class HeaderSection extends StatelessWidget {
                               web.window.location.href =
                                   'https://cliente.softmed24h.com/login';
                             },
-                            child: const Text(
+                            child: Text(
                               'ENTRAR',
-                              style: TextStyle(color: AppColors.primary),
+                              style: TextStyle(color: colors.primaryGreen),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -162,7 +163,7 @@ class HeaderSection extends StatelessWidget {
                 maxWidth: 1763,
               ), // Max width for content area
               child: Container(
-                color: AppColors.primary,
+                color: colors.primaryGreen,
                 // Reduced horizontal padding to 10px on each side for mid-size desktop screens
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -193,7 +194,7 @@ class HeaderSection extends StatelessWidget {
                                           ? 20
                                           : 28,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.secondary,
+                                      color: colors.primaryBlue,
                                     ),
                                   ),
                                   const SizedBox(width: 14),
@@ -203,8 +204,7 @@ class HeaderSection extends StatelessWidget {
                                       horizontal: 10,
                                     ),
                                     decoration: BoxDecoration(
-                                      // Use the primary color as background unless inverted
-                                      color: AppColors.secondary,
+                                      color: colors.primaryBlue,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -214,7 +214,7 @@ class HeaderSection extends StatelessWidget {
                                             ? 20
                                             : 28,
                                         fontWeight: FontWeight.bold,
-                                        color: AppColors.primary,
+                                        color: colors.primaryGreen,
                                       ),
                                     ),
                                   ),
@@ -225,20 +225,20 @@ class HeaderSection extends StatelessWidget {
                                 'SEM SAIR DE CASA.',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: AppColors.secondary,
+                                  color: colors.primaryBlue,
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              const Text(
+                              Text(
                                 '✓ Médico 24h\n✓ Atendimento imediato\n✓ Prescrição digital\n✓ Atestados e receitas\n✓ Tudo por apenas R\$ 49,90',
-                                style: TextStyle(color: AppColors.secondary),
+                                style: TextStyle(color: colors.primaryBlue),
                               ),
                               const SizedBox(height: 20),
-                              const Text(
+                              Text(
                                 'R\$ 49,90',
                                 style: TextStyle(
                                   fontSize: 22,
-                                  color: AppColors.secondary,
+                                  color: colors.primaryBlue,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -249,11 +249,11 @@ class HeaderSection extends StatelessWidget {
                                       'https://cliente.softmed24h.com/cadastro';
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.secondary,
+                                  backgroundColor: colors.primaryBlue,
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'QUERO ME CONSULTAR',
-                                  style: TextStyle(color: AppColors.primary),
+                                  style: TextStyle(color: colors.primaryGreen),
                                 ),
                               ),
                             ],
@@ -287,7 +287,7 @@ class HeaderSection extends StatelessWidget {
                                         // Font size controlled by isNarrowDesktop flag
                                         fontSize: isNarrowDesktop ? 28 : 32,
                                         fontWeight: FontWeight.bold,
-                                        color: AppColors.secondary,
+                                        color: colors.primaryBlue,
                                       ),
                                     ),
                                     // The second, styled part of the text
@@ -296,7 +296,7 @@ class HeaderSection extends StatelessWidget {
                                         horizontal: 10,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: AppColors.secondary,
+                                        color: colors.primaryBlue,
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
@@ -305,7 +305,7 @@ class HeaderSection extends StatelessWidget {
                                           // Font size controlled by isNarrowDesktop flag
                                           fontSize: isNarrowDesktop ? 28 : 32,
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.primary,
+                                          color: colors.primaryGreen,
                                         ),
                                       ),
                                     ),
@@ -316,15 +316,15 @@ class HeaderSection extends StatelessWidget {
                                   'SEM SAIR DE CASA.',
                                   style: TextStyle(
                                     fontSize: isNarrowDesktop ? 20 : 22,
-                                    color: AppColors.secondary,
+                                    color: colors.primaryBlue,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                const Text(
+                                Text(
                                   '✓ Médico 24h\n✓ Atendimento imediato\n✓ Prescrição digital\n✓ Atestados e receitas\n✓ Tudo por apenas R\$ 49,90',
                                   style: TextStyle(
-                                    color: AppColors.secondary,
+                                    color: colors.primaryBlue,
                                     fontSize: 16,
                                   ),
                                 ),
@@ -333,7 +333,7 @@ class HeaderSection extends StatelessWidget {
                                   'R\$ 49,90',
                                   style: TextStyle(
                                     fontSize: isNarrowDesktop ? 24 : 28,
-                                    color: AppColors.secondary,
+                                    color: colors.primaryBlue,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -344,7 +344,7 @@ class HeaderSection extends StatelessWidget {
                                         'https://cliente.softmed24h.com/cadastro';
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.secondary,
+                                    backgroundColor: colors.primaryBlue,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 30,
                                       vertical: 20,
@@ -353,10 +353,10 @@ class HeaderSection extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     'QUERO ME CONSULTAR',
                                     style: TextStyle(
-                                      color: AppColors.primary,
+                                      color: colors.primaryGreen,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),

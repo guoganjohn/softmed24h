@@ -7,10 +7,12 @@ class TestimonialSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MyColors>()!;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(32),
-      color: AppColors.primary,
+      color: colors.primaryGreen,
       child: Column(
         children: [
           Text(
@@ -28,7 +30,7 @@ class TestimonialSection extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.width < 600 ? 14 : 18,
-              color: AppColors.secondary,
+              color: colors.primaryBlue,
             ),
           ),
           const SizedBox(height: 10),
@@ -38,12 +40,12 @@ class TestimonialSection extends StatelessWidget {
                   'https://cliente.softmed24h.com/cadastro';
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.secondary,
+              backgroundColor: colors.primaryBlue,
             ),
             child: Text(
               'QUERO ME CONSULTAR',
               style: TextStyle(
-                color: AppColors.primary,
+                color: colors.primaryGreen,
                 fontSize: MediaQuery.of(context).size.width < 600 ? 12 : 14,
               ),
             ),

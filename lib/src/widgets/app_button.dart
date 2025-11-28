@@ -24,10 +24,12 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MyColors>()!;
+
     return ElevatedButton(
       onPressed: onPressed, // Use the exposed onPressed callback
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
+        backgroundColor: colors.primaryGreen,
         shape: const StadiumBorder(),
         padding: EdgeInsets.zero,
         elevation: 4,
@@ -53,7 +55,7 @@ class AppButton extends StatelessWidget {
                   child: Icon(
                     icon,
                     size: iconSize ?? (height - 5) * 0.7,
-                    color: AppColors.primary,
+                    color: colors.primaryGreen,
                   ),
                 ),
               ),

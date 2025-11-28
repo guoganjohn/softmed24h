@@ -65,22 +65,24 @@ class _MediaSectionState extends State<MediaSection> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MyColors>()!;
+
     return Container(
-      color: AppColors.primary,
+      color: colors.primaryGreen,
       padding: const EdgeInsets.all(32),
       child: Column(
         children: [
-          const Text(
+          Text(
             'SOFTMED24H NA MÍDIA:',
             style: TextStyle(
-              color: AppColors.secondary,
+              color: Colors.white, // Changed to white as primaryGreen is the background
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Text(
+          Text(
             '(clique na logo do portal para abrir a matéria)',
-            style: TextStyle(color: AppColors.secondary, fontSize: 18),
+            style: TextStyle(color: colors.primaryBlue, fontSize: 18),
           ),
           const SizedBox(height: 20),
           SizedBox(
