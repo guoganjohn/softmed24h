@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:softmed24h/src/screens/landing/sections/faq_section.dart';
 import 'package:web/web.dart' as web;
 
 void main() {
@@ -81,6 +82,7 @@ class LandingPage extends StatelessWidget {
             BenefitsSection(isMobile: isMobile),
             PricingSection(isMobile: isMobile),
             CtaSection(isMobile: isMobile),
+            FAQSection(),
             FooterSection(isMobile: isMobile),
           ],
         ),
