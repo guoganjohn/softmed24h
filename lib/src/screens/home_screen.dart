@@ -433,12 +433,12 @@ class BenefitsSection extends StatelessWidget {
               BenefitCard(
                 icon: Icons.percent_rounded,
                 title: 'Receitas, Atestados e Exames',
-                description: 'Documontos dirotamonte, no seu celular',
+                description: 'Documentos diretamente no seu celular',
               ),
               BenefitCard(
                 icon: Icons.medication_rounded,
                 title: 'Sem Burocracia',
-                description: 'Rapidez e segurança, comvalidade em todo Brasil.',
+                description: 'Rapidez e segurança, com validade em todo Brasil.',
               ),
             ],
           ),
