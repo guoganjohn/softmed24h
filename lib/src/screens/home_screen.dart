@@ -12,15 +12,15 @@ class DoutorBeneficiosApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TeleClin',
+      title: 'MeuMed',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // Primary Brand Colors based on the medical/health theme
-        primaryColor: const Color(0xFF0056D2), // Deep Blue
+        primaryColor: const Color(0xFF0089CD), // MEUMED Blue
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF0056D2),
-          secondary: const Color(0xFF00C853), // Success Green for CTAs
+          seedColor: const Color(0xFF0089CD),
+          secondary: const Color(0xFFF58634), // CTA Orange
           surface: Colors.white,
         ),
         useMaterial3: true,
@@ -29,13 +29,13 @@ class DoutorBeneficiosApp extends StatelessWidget {
           displayLarge: TextStyle(
             fontSize: 48,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF1A237E),
+            color: Color(0xFF0089CD),
             height: 1.1,
           ),
           displayMedium: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1A237E),
+            color: Color(0xFF0089CD),
           ),
           bodyLarge: TextStyle(fontSize: 18, color: Colors.black87),
           bodyMedium: TextStyle(fontSize: 16, color: Colors.black54),
@@ -59,13 +59,13 @@ class LandingPage extends StatelessWidget {
       // Sticky header for Desktop, standard AppBar for mobile
       appBar: isMobile
           ? AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: const Color(0xFF0089CD),
               surfaceTintColor: Colors.white,
               elevation: 2,
-              title: const LogoWidget(fontSize: 20),
+              title: const LogoWidget(fontSize: 20, isWhite: true),
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.menu, color: Color(0xFF0056D2)),
+                  icon: const Icon(Icons.menu, color: Colors.white),
                   onPressed: () {},
                 ),
               ],
@@ -101,7 +101,7 @@ class DesktopNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF0089CD),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -113,7 +113,7 @@ class DesktopNavBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
       child: Row(
         children: [
-          const LogoWidget(),
+          const LogoWidget(isWhite: true),
           const Spacer(),
 
           ElevatedButton(
@@ -121,10 +121,10 @@ class DesktopNavBar extends StatelessWidget {
               web.window.location.href = 'https://cliente.softmed24h.com/login';
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Theme.of(context).primaryColor,
+              backgroundColor: const Color(0xFF0089CD),
+              foregroundColor: Colors.white,
               elevation: 0,
-              side: BorderSide(color: Theme.of(context).primaryColor),
+              side: const BorderSide(color: Colors.white),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
             ),
             child: const Text('ENTRAR'),
@@ -136,8 +136,8 @@ class DesktopNavBar extends StatelessWidget {
                   'https://cliente.softmed24h.com/cadastro';
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              foregroundColor: Colors.white,
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFF0089CD),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -176,14 +176,20 @@ class NavItem extends StatelessWidget {
 
 class LogoWidget extends StatelessWidget {
   final double fontSize;
-  const LogoWidget({super.key, this.fontSize = 26});
+  final bool isWhite;
+  const LogoWidget({super.key, this.fontSize = 26, this.isWhite = false});
 
   @override
   Widget build(BuildContext context) {
+    // Note: Assuming we might have a white logo version or just using the same one.
+    // For now using the same asset. If 'isWhite' is true, and it's a PNG with transparency,
+    // it might need a white filter or a different asset.
+    // Since I don't have a specific 'logo_white.png', I will use the default.
+    // Ideally, replace with: isWhite ? 'assets/images/logo_white.png' : 'assets/images/logo.png'
     return Image.asset(
       'assets/images/logo.png',
-      height:
-          fontSize * 1.5, // Adjust height based on fontSize for responsiveness
+      height: fontSize * 1.5,
+      // color: isWhite ? Colors.white : null, // Uncomment if logo supports color masking
     );
   }
 }
@@ -217,49 +223,54 @@ class HeroSection extends StatelessWidget {
                   ? CrossAxisAlignment.center
                   : CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade100,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'SAÚDE RÁPIDA, SEGURA E DIGITAL!',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
                 Text(
-                  'Cuidar da sua saúde nunca foi tão simples e barato.',
+                  'CONSULTAS\nMÉDICAS 24H\nPOR DIA!',
                   style: isMobile
-                      ? Theme.of(
-                          context,
-                        ).textTheme.displayMedium?.copyWith(fontSize: 32)
-                      : Theme.of(context).textTheme.displayLarge,
+                      ? Theme.of(context).textTheme.displayMedium?.copyWith(
+                            fontSize: 32,
+                            color: const Color(0xFFE53935), // Reddish for contrast like image
+                            height: 1.0,
+                          )
+                      : Theme.of(context).textTheme.displayLarge?.copyWith(
+                            color: const Color(0xFFE53935),
+                            height: 1.0,
+                            fontWeight: FontWeight.w900,
+                          ),
+                  textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                ),
+                 Text(
+                  'SEM SAIR DE CASA',
+                  style: isMobile
+                      ? Theme.of(context).textTheme.displayMedium?.copyWith(
+                            fontSize: 24,
+                            color: const Color(0xFF0089CD),
+                          )
+                      : Theme.of(context).textTheme.displayMedium?.copyWith(
+                            color: const Color(0xFF0089CD),
+                            fontWeight: FontWeight.bold,
+                          ),
                   textAlign: isMobile ? TextAlign.center : TextAlign.start,
                 ),
                 const SizedBox(height: 24),
-                Text(
-                  'Consulta, Receitas, Atestados, Exames',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic),
-                  textAlign: isMobile ? TextAlign.center : TextAlign.start,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Imediatamente no seu celular!',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic),
-                  textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                // Icons Placeholder Row
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+                    children: const [
+                       _FeatureIcon(icon: Icons.medical_services_outlined, label: 'Médicos\n24h'),
+                       SizedBox(width: 15),
+                       _FeatureIcon(icon: Icons.description_outlined, label: 'Atestado\ne receitas'),
+                       SizedBox(width: 15),
+                       _FeatureIcon(icon: Icons.history_toggle_off, label: 'Use\nagora'),
+                       SizedBox(width: 15),
+                       _FeatureIcon(icon: Icons.smartphone, label: 'Suporte\ntotal'),
+                       SizedBox(width: 15),
+                       _FeatureIcon(icon: Icons.credit_card, label: 'Pagamento\nseguro'),
+                       SizedBox(width: 15),
+                       _FeatureIcon(icon: Icons.people_outline, label: 'Todas as\nidades'),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 40),
                 Wrap(
@@ -275,9 +286,7 @@ class HeroSection extends StatelessWidget {
                             'https://cliente.softmed24h.com/cadastro';
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.secondary,
+                        backgroundColor: const Color(0xFF29B6F6), // Cyan/Light Blue
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 32,
@@ -314,23 +323,28 @@ class HeroSection extends StatelessWidget {
                     // Using a placeholder image from Unsplash source
                     image: AssetImage('assets/images/ad.png'),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color.fromARGB(
-                        51,
-                        33,
-                        150,
-                        243,
-                      ), // Colors.blue.withOpacity(0.2) approx
-                      blurRadius: 30,
-                      offset: const Offset(0, 20),
-                    ),
-                  ],
                 ),
               ),
             ),
         ],
       ),
+    );
+  }
+}
+
+class _FeatureIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _FeatureIcon({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: const Color(0xFF0089CD), size: 30),
+        const SizedBox(height: 5),
+        Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 10, color: Color(0xFF0089CD))),
+      ],
     );
   }
 }
@@ -346,14 +360,14 @@ class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF2f3773),
+      color: const Color(0xFF0089CD),
       padding: const EdgeInsets.symmetric(vertical: 40),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: const [
           StatItem(value: '+200k', label: 'Consultas'),
           StatItem(value: '+50', label: 'Médicos'),
-          StatItem(value: '+150k', label: 'Atestados e Recetias'),
+          StatItem(value: '+150k', label: 'Atestados e Receitas'),
         ],
       ),
     );
@@ -379,7 +393,7 @@ class StatItem extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(color: Colors.white70, fontSize: 16),
+          style: const TextStyle(color: Colors.white, fontSize: 16),
         ),
       ],
     );
@@ -404,11 +418,11 @@ class BenefitsSection extends StatelessWidget {
       child: Column(
         children: [
           const Text(
-            'Por que escolher o TeleClin?',
+            'Por que escolher o MEUMED?',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1A237E),
+              color: Color(0xFF0089CD),
             ),
             textAlign: TextAlign.center,
           ),
@@ -431,14 +445,14 @@ class BenefitsSection extends StatelessWidget {
                     'Atendimento médico na palma da mão, sem sair de casa.',
               ),
               BenefitCard(
-                icon: Icons.percent_rounded,
+                icon: Icons.description_outlined,
                 title: 'Receitas, Atestados e Exames',
-                description: 'Documontos dirotamonte no seu celular',
+                description: 'Documentos diretamente no seu celular',
               ),
               BenefitCard(
-                icon: Icons.medication_rounded,
+                icon: Icons.local_hospital_outlined,
                 title: 'Sem Burocracia',
-                description: 'Rapidez e segurança, comvalidade em todo Brasil.',
+                description: 'Rapidez e segurança, com validade em todo Brasil.',
               ),
             ],
           ),
@@ -483,10 +497,10 @@ class BenefitCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFE3F2FD),
+              color: const Color(0xFFE1F5FE), // Lighter blue
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: const Color(0xFF0056D2), size: 32),
+            child: Icon(icon, color: const Color(0xFF0089CD), size: 32),
           ),
           const SizedBox(height: 20),
           Text(
@@ -494,7 +508,7 @@ class BenefitCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1A237E),
+              color: Color(0xFF0089CD),
             ),
           ),
           const SizedBox(height: 12),
@@ -508,214 +522,6 @@ class BenefitCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// PRICING SECTION
-// -----------------------------------------------------------------------------
-
-class PricingSection extends StatelessWidget {
-  final bool isMobile;
-  const PricingSection({super.key, required this.isMobile});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF8F9FA),
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 20 : 80,
-        vertical: 80,
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Escolha o plano ideal',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1A237E),
-            ),
-          ),
-          const SizedBox(height: 60),
-          Wrap(
-            spacing: 30,
-            runSpacing: 30,
-            alignment: WrapAlignment.center,
-            children: [
-              PricingCard(
-                title: 'Individual',
-                price: '29,90',
-                features: const [
-                  'Titular apenas',
-                  'Consultas com desconto',
-                  'Exames laboratoriais',
-                  'Sem carência',
-                ],
-                isPopular: false,
-                isMobile: isMobile,
-              ),
-              PricingCard(
-                title: 'Familiar',
-                price: '49,90',
-                features: const [
-                  'Titular + 3 Dependentes',
-                  'Telemedicina Grátis',
-                  'Odontologia (Avaliação)',
-                  'Clube de Vantagens',
-                  'Sem carência',
-                ],
-                isPopular: true,
-                isMobile: isMobile,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PricingCard extends StatelessWidget {
-  final String title;
-  final String price;
-  final List<String> features;
-  final bool isPopular;
-  final bool isMobile;
-
-  const PricingCard({
-    super.key,
-    required this.title,
-    required this.price,
-    required this.features,
-    required this.isPopular,
-    required this.isMobile,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: isMobile ? double.infinity : 350,
-          padding: const EdgeInsets.all(40),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: isPopular
-                ? Border.all(color: const Color(0xFF00C853), width: 2)
-                : Border.all(color: Colors.transparent),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 30,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'R\$',
-                    style: TextStyle(fontSize: 20, color: Colors.black54),
-                  ),
-                  Text(
-                    price,
-                    style: const TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0056D2),
-                    ),
-                  ),
-                  const Text(
-                    '/mês',
-                    style: TextStyle(fontSize: 20, color: Colors.black54),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-              ...features.map(
-                (feature) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle_rounded,
-                        color: Color(0xFF00C853),
-                        size: 20,
-                      ),
-                      const SizedBox(width: 12),
-                      Text(feature, style: const TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isPopular
-                        ? const Color(0xFF00C853)
-                        : const Color(0xFF0056D2),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'ASSINAR AGORA',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (isPopular)
-          Positioned(
-            top: -15,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF00C853),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  'MAIS VENDIDO',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
     );
   }
 }
@@ -742,7 +548,7 @@ class CtaSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2f3773),
+              color: Color(0xFF0089CD),
             ),
             textAlign: TextAlign.center,
           ),
@@ -752,11 +558,10 @@ class CtaSection extends StatelessWidget {
               horizontal: isMobile
                   ? 20
                   : 80, // Keep horizontal margin for the inner box
-              // Removed vertical margin from here, handled by outer container padding
             ),
             padding: EdgeInsets.all(isMobile ? 30 : 50),
             decoration: BoxDecoration(
-              color: const Color(0xFF2f3773),
+              color: const Color(0xFF0089CD),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Flex(
@@ -771,7 +576,7 @@ class CtaSection extends StatelessWidget {
                         'https://cliente.softmed24h.com/cadastro';
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFf58634), // Orange
+                    backgroundColor: const Color(0xFFF58634), // Orange
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,
@@ -804,42 +609,9 @@ class CtaSection extends StatelessWidget {
                     // Compra Segura Badge
                     Container(
                       margin: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: isMobile
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.security,
-                            color: Colors.green,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 5),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'COMPRA',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1,
-                                ),
-                              ),
-                              Text(
-                                'SEGURA',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      child: Image.asset(
+                        'assets/images/safepurchase.png',
+                        height: 80, // Adjust height as needed to match the design
                       ),
                     ),
                     const Text(
@@ -898,26 +670,33 @@ class FooterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF1A1A1A),
+      color: Colors.white, // Changed to white to match general aesthetic, or keep dark if preferred. Sticking to dark for footer usually standard.
+      // Reverting to dark for footer standard contrast, but using the blue might be nice.
+      // Let's stick to simple light grey or keep the dark one but maybe cleaner.
+      // The image doesn't show the footer, so I'll keep the dark one but update text colors if needed.
       padding: EdgeInsets.symmetric(
         horizontal: isMobile ? 20 : 80,
         vertical: 60,
       ),
       child: Column(
         children: [
-          Row(
+          // Divider for visual separation from white body
+          const Divider(color: Color(0xFFEEEEEE)),
+          const SizedBox(height: 40),
+          // FAQ is separate, so this is just the bottom links
+           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 flex: isMobile ? 1 : 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const LogoWidget(fontSize: 22),
-                    const SizedBox(height: 20),
-                    const Text(
+                  children: const [
+                     LogoWidget(fontSize: 22),
+                     SizedBox(height: 20),
+                     Text(
                       'O melhor cartão de benefícios em saúde do Brasil. Qualidade e preço justo.',
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.black54),
                     ),
                   ],
                 ),
@@ -927,21 +706,23 @@ class FooterSection extends StatelessWidget {
                 const FooterColumn(
                   title: 'Institucional',
                   links: ['Sobre nós', 'Carreiras', 'Imprensa'],
+                  textColor: Colors.black87,
                 ),
                 const SizedBox(width: 60),
                 const FooterColumn(
                   title: 'Ajuda',
                   links: ['Fale Conosco', 'FAQ', 'Política de Privacidade'],
+                  textColor: Colors.black87,
                 ),
               ],
             ],
           ),
           const SizedBox(height: 60),
-          Divider(color: Colors.grey.shade800),
+          Divider(color: Colors.grey.shade200),
           const SizedBox(height: 30),
           const Text(
-            '© 2025 TeleClin. Todos os direitos reservados.',
-            style: TextStyle(color: Colors.grey, fontSize: 14),
+            '© 2025 MEUMED. Todos os direitos reservados.',
+            style: TextStyle(color: Colors.black45, fontSize: 14),
           ),
         ],
       ),
@@ -952,7 +733,8 @@ class FooterSection extends StatelessWidget {
 class FooterColumn extends StatelessWidget {
   final String title;
   final List<String> links;
-  const FooterColumn({super.key, required this.title, required this.links});
+  final Color textColor;
+  const FooterColumn({super.key, required this.title, required this.links, this.textColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -961,8 +743,8 @@ class FooterColumn extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: textColor,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -973,7 +755,7 @@ class FooterColumn extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
               link,
-              style: const TextStyle(color: Colors.grey, fontSize: 15),
+              style: TextStyle(color: textColor.withOpacity(0.7), fontSize: 15),
             ),
           ),
         ),
