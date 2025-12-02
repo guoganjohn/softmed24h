@@ -75,7 +75,8 @@ class _MediaSectionState extends State<MediaSection> {
           Text(
             'SOFTMED24H NA MÍDIA:',
             style: TextStyle(
-              color: Colors.white, // Changed to white as primaryGreen is the background
+              color: Colors
+                  .white, // Changed to white as primaryGreen is the background
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),

@@ -80,7 +80,6 @@ class LandingPage extends StatelessWidget {
             HeroSection(isMobile: isMobile),
             StatsSection(isMobile: isMobile),
             BenefitsSection(isMobile: isMobile),
-            PricingSection(isMobile: isMobile),
             CtaSection(isMobile: isMobile),
             FAQSection(),
             FooterSection(isMobile: isMobile),
@@ -105,7 +104,7 @@ class DesktopNavBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -116,11 +115,10 @@ class DesktopNavBar extends StatelessWidget {
         children: [
           const LogoWidget(),
           const Spacer(),
-          
+
           ElevatedButton(
             onPressed: () {
-              web.window.location.href =
-                  'https://cliente.softmed24h.com/login';
+              web.window.location.href = 'https://cliente.softmed24h.com/login';
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
@@ -145,8 +143,10 @@ class DesktopNavBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('QUERO MEU CARTÃO',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              'QUERO ME CONSULTAR!',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -182,7 +182,8 @@ class LogoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       'assets/images/logo.png',
-      height: fontSize * 1.5, // Adjust height based on fontSize for responsiveness
+      height:
+          fontSize * 1.5, // Adjust height based on fontSize for responsiveness
     );
   }
 }
@@ -217,14 +218,16 @@ class HeroSection extends StatelessWidget {
                   : CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.blue.shade100,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'SAÚDE RÁPIDA SEGURA E DIGITAL!',
+                    'SAÚDE RÁPIDA, SEGURA E DIGITAL!',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,
@@ -236,56 +239,59 @@ class HeroSection extends StatelessWidget {
                 Text(
                   'Cuidar da sua saúde nunca foi tão simples e barato.',
                   style: isMobile
-                      ? Theme.of(context)
-                          .textTheme
-                          .displayMedium
-                          ?.copyWith(fontSize: 32)
+                      ? Theme.of(
+                          context,
+                        ).textTheme.displayMedium?.copyWith(fontSize: 32)
                       : Theme.of(context).textTheme.displayLarge,
                   textAlign: isMobile ? TextAlign.center : TextAlign.start,
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Descontos de até 70% em consultas, exames e medicamentos. Sem carência e sem limite de idade.',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  'Consulta, Receitas, Atestados, Exames',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic),
+                  textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Imediatamente no seu celular!',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic),
                   textAlign: isMobile ? TextAlign.center : TextAlign.start,
                 ),
                 const SizedBox(height: 40),
                 Wrap(
                   spacing: 16,
                   runSpacing: 16,
-                  alignment:
-                      isMobile ? WrapAlignment.center : WrapAlignment.start,
+                  alignment: isMobile
+                      ? WrapAlignment.center
+                      : WrapAlignment.start,
                   children: [
                     ElevatedButton(
                       onPressed: () {
                         web.window.location.href =
-                          'https://cliente.softmed24h.com/cadastro';
+                            'https://cliente.softmed24h.com/cadastro';
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondary,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 22),
+                          horizontal: 32,
+                          vertical: 22,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text('QUERO ME ASSOCIAR',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.play_circle_outline),
-                      label: const Text('Ver como funciona'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF1A237E),
-                        side: const BorderSide(color: Color(0xFF1A237E)),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 22),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      child: const Text(
+                        'QUERO ME CONSULTAR!',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -304,14 +310,18 @@ class HeroSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
                   image: const DecorationImage(
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                     // Using a placeholder image from Unsplash source
-                    image: NetworkImage(
-                        'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?ixlib=rb-4.0.3&auto=format&fit=crop&w=1491&q=80'),
+                    image: AssetImage('assets/images/ad.png'),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blue.withOpacity(0.2),
+                      color: Color.fromARGB(
+                        51,
+                        33,
+                        150,
+                        243,
+                      ), // Colors.blue.withOpacity(0.2) approx
                       blurRadius: 30,
                       offset: const Offset(0, 20),
                     ),
@@ -336,14 +346,14 @@ class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF0056D2),
+      color: const Color(0xFF2f3773),
       padding: const EdgeInsets.symmetric(vertical: 40),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: const [
-          StatItem(value: '10k+', label: 'Médicos'),
-          StatItem(value: '2k+', label: 'Laboratórios'),
-          StatItem(value: '500+', label: 'Cidades'),
+          StatItem(value: '+200k', label: 'Consultas'),
+          StatItem(value: '+50', label: 'Médicos'),
+          StatItem(value: '+150k', label: 'Atestados e Recetias'),
         ],
       ),
     );
@@ -369,10 +379,7 @@ class StatItem extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 16,
-          ),
+          style: const TextStyle(color: Colors.white70, fontSize: 16),
         ),
       ],
     );
@@ -425,18 +432,13 @@ class BenefitsSection extends StatelessWidget {
               ),
               BenefitCard(
                 icon: Icons.percent_rounded,
-                title: 'Descontos em Exames',
-                description: 'Até 70% de desconto em laboratórios parceiros.',
+                title: 'Receitas, Atestados e Exames',
+                description: 'Documontos dirotamonte no seu celular',
               ),
               BenefitCard(
                 icon: Icons.medication_rounded,
-                title: 'Farmácias',
-                description: 'Medicamentos com preços especiais nas redes.',
-              ),
-              BenefitCard(
-                icon: Icons.family_restroom_rounded,
-                title: 'Plano Familiar',
-                description: 'Inclua dependentes sem custo adicional no plano.',
+                title: 'Sem Burocracia',
+                description: 'Rapidez e segurança, comvalidade em todo Brasil.',
               ),
             ],
           ),
@@ -549,7 +551,7 @@ class PricingSection extends StatelessWidget {
                   'Titular apenas',
                   'Consultas com desconto',
                   'Exames laboratoriais',
-                  'Sem carência'
+                  'Sem carência',
                 ],
                 isPopular: false,
                 isMobile: isMobile,
@@ -562,7 +564,7 @@ class PricingSection extends StatelessWidget {
                   'Telemedicina Grátis',
                   'Odontologia (Avaliação)',
                   'Clube de Vantagens',
-                  'Sem carência'
+                  'Sem carência',
                 ],
                 isPopular: true,
                 isMobile: isMobile,
@@ -607,7 +609,7 @@ class PricingCard extends StatelessWidget {
                 : Border.all(color: Colors.transparent),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 30,
                 offset: const Offset(0, 10),
               ),
@@ -628,8 +630,10 @@ class PricingCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('R\$',
-                      style: TextStyle(fontSize: 20, color: Colors.black54)),
+                  const Text(
+                    'R\$',
+                    style: TextStyle(fontSize: 20, color: Colors.black54),
+                  ),
                   Text(
                     price,
                     style: const TextStyle(
@@ -638,22 +642,29 @@ class PricingCard extends StatelessWidget {
                       color: Color(0xFF0056D2),
                     ),
                   ),
-                  const Text('/mês',
-                      style: TextStyle(fontSize: 20, color: Colors.black54)),
+                  const Text(
+                    '/mês',
+                    style: TextStyle(fontSize: 20, color: Colors.black54),
+                  ),
                 ],
               ),
               const SizedBox(height: 40),
-              ...features.map((feature) => Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.check_circle_rounded,
-                            color: Color(0xFF00C853), size: 20),
-                        const SizedBox(width: 12),
-                        Text(feature, style: const TextStyle(fontSize: 16)),
-                      ],
-                    ),
-                  )),
+              ...features.map(
+                (feature) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        color: Color(0xFF00C853),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(feature, style: const TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 40),
               SizedBox(
                 width: double.infinity,
@@ -669,8 +680,10 @@ class PricingCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text('ASSINAR AGORA',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    'ASSINAR AGORA',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ],
@@ -683,8 +696,10 @@ class PricingCard extends StatelessWidget {
             right: 0,
             child: Center(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF00C853),
                   borderRadius: BorderRadius.circular(20),
@@ -716,49 +731,155 @@ class CtaSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: isMobile ? 20 : 80,
-        vertical: 80,
-      ),
-      padding: EdgeInsets.all(isMobile ? 40 : 80),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF0056D2), Color(0xFF1565C0)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-      ),
+      color: const Color(0xFFf6fafe),
+      padding: const EdgeInsets.symmetric(
+        vertical: 40,
+      ), // Overall section padding
       child: Column(
         children: [
-          const Text(
-            'Pronto para cuidar da sua saúde?',
+          Text(
+            'Se consulte agora mesmo:',
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Color(0xFF2f3773),
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 20),
-          const Text(
-            'Faça seu cadastro em menos de 5 minutos e comece a usar.',
-            style: TextStyle(fontSize: 18, color: Colors.white70),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: const Color(0xFF0056D2),
-              padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 22),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+          const SizedBox(height: 30),
+          Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: isMobile
+                  ? 20
+                  : 80, // Keep horizontal margin for the inner box
+              // Removed vertical margin from here, handled by outer container padding
             ),
-            child: const Text('COMEÇAR AGORA',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            padding: EdgeInsets.all(isMobile ? 30 : 50),
+            decoration: BoxDecoration(
+              color: const Color(0xFF2f3773),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Flex(
+              direction: isMobile ? Axis.vertical : Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Button Section
+                ElevatedButton(
+                  onPressed: () {
+                    web.window.location.href =
+                        'https://cliente.softmed24h.com/cadastro';
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFf58634), // Orange
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'QUERO ME CONSULTAR',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+                if (isMobile)
+                  const SizedBox(height: 30)
+                else
+                  const SizedBox(width: 60),
+
+                // Price & Security Section
+                Column(
+                  crossAxisAlignment: isMobile
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
+                  children: [
+                    // Compra Segura Badge
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        mainAxisAlignment: isMobile
+                            ? MainAxisAlignment.center
+                            : MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.security,
+                            color: Colors.green,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 5),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'COMPRA',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1,
+                                ),
+                              ),
+                              Text(
+                                'SEGURA',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Text(
+                      'APENAS',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: isMobile
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: const [
+                        Text(
+                          'R\$ ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '49,90',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 56,
+                            fontWeight: FontWeight.bold,
+                            height: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -812,7 +933,7 @@ class FooterSection extends StatelessWidget {
                   title: 'Ajuda',
                   links: ['Fale Conosco', 'FAQ', 'Política de Privacidade'],
                 ),
-              ]
+              ],
             ],
           ),
           const SizedBox(height: 60),
@@ -847,13 +968,15 @@ class FooterColumn extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        ...links.map((link) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
-                link,
-                style: const TextStyle(color: Colors.grey, fontSize: 15),
-              ),
-            )),
+        ...links.map(
+          (link) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              link,
+              style: const TextStyle(color: Colors.grey, fontSize: 15),
+            ),
+          ),
+        ),
       ],
     );
   }

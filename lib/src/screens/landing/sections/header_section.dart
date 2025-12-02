@@ -106,7 +106,8 @@ class HeaderSection extends StatelessWidget {
                               Text(
                                 'Nosso plano é a sua saúde',
                                 style: TextStyle(
-                                  color: Colors.black, // AppColors.text replaced with Colors.black
+                                  color: Colors
+                                      .black, // AppColors.text replaced with Colors.black
                                   fontSize: 12,
                                 ),
                               ),

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 @immutable
 class MyColors extends ThemeExtension<MyColors> {
-  const MyColors({
-    required this.primaryGreen,
-    required this.primaryBlue,
-  });
+  const MyColors({required this.primaryGreen, required this.primaryBlue});
 
   final Color? primaryGreen;
   final Color? primaryBlue;
