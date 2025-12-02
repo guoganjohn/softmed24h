@@ -804,42 +804,9 @@ class CtaSection extends StatelessWidget {
                     // Compra Segura Badge
                     Container(
                       margin: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: isMobile
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.security,
-                            color: Colors.green,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 5),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'COMPRA',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1,
-                                ),
-                              ),
-                              Text(
-                                'SEGURA',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      child: Image.asset(
+                        'assets/images/safepurchase.png',
+                        height: 30, // Adjust height as needed to match the design
                       ),
                     ),
                     const Text(
