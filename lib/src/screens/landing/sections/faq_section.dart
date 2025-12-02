@@ -9,7 +9,7 @@ class FAQSection extends StatefulWidget {
 
 class _FAQSectionState extends State<FAQSection> {
   final List<String> questions = [
-    'O que é o Meu Med?',
+    'O que é o TeleClin?',
     'Qual o valor da consulta?',
     'Há carência ou fidelidade?',
     'Como funciona o atendimento médico?',
@@ -20,7 +20,7 @@ class _FAQSectionState extends State<FAQSection> {
   ];
 
   final List<String> answers = [
-    'Meu Med é uma plataforma de telemedicina que oferece consultas médicas 24h por dia, sem sair de casa, por apenas R\$ 49,90.',
+    'TeleClin é uma plataforma de telemedicina que oferece consultas médicas 24h por dia, sem sair de casa, por apenas R\$ 49,90.',
     'O valor da consulta é de R\$ 49,90.',
     'Não há carência nem fidelidade. Você usa quando precisar.',
     'O atendimento é feito por videochamada, a qualquer hora do dia ou da noite, com médicos qualificados.',

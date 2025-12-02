@@ -353,7 +353,7 @@ class StatsSection extends StatelessWidget {
         children: const [
           StatItem(value: '+200k', label: 'Consultas'),
           StatItem(value: '+50', label: 'Médicos'),
-          StatItem(value: '+150k', label: 'Atestados e Recetias'),
+          StatItem(value: '+150k', label: 'Atestados e receitas'),
         ],
       ),
     );
@@ -433,7 +433,7 @@ class BenefitsSection extends StatelessWidget {
               BenefitCard(
                 icon: Icons.percent_rounded,
                 title: 'Receitas, Atestados e Exames',
-                description: 'Documontos dirotamonte no seu celular',
+                description: 'Documontos dirotamonte, no seu celular',
               ),
               BenefitCard(
                 icon: Icons.medication_rounded,
@@ -806,7 +806,7 @@ class CtaSection extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 10),
                       child: Image.asset(
                         'assets/images/safepurchase.png',
-                        height: 30, // Adjust height as needed to match the design
+                        height: 90, // Adjust height as needed to match the design
                       ),
                     ),
                     const Text(
@@ -883,7 +883,7 @@ class FooterSection extends StatelessWidget {
                     const LogoWidget(fontSize: 22),
                     const SizedBox(height: 20),
                     const Text(
-                      'O melhor cartão de benefícios em saúde do Brasil. Qualidade e preço justo.',
+                      'A telemedicina mais rápida e segura do Brasil!',
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
