@@ -213,104 +213,140 @@ class HeroSection extends StatelessWidget {
       ),
       child: Flex(
         direction: isMobile ? Axis.vertical : Axis.horizontal,
+        mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Text Content
           Expanded(
             flex: isMobile ? 0 : 5,
-            child: Column(
-              crossAxisAlignment: isMobile
-                  ? CrossAxisAlignment.center
-                  : CrossAxisAlignment.start,
+            child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                Text(
-                  'CONSULTAS\nMÉDICAS 24H\nPOR DIA!',
-                  style: isMobile
-                      ? Theme.of(context).textTheme.displayMedium?.copyWith(
-                            fontSize: 32,
-                            color: const Color(0xFFE53935), // Reddish for contrast like image
-                            height: 1.0,
-                          )
-                      : Theme.of(context).textTheme.displayLarge?.copyWith(
-                            color: const Color(0xFFE53935),
-                            height: 1.0,
-                            fontWeight: FontWeight.w900,
-                          ),
-                  textAlign: isMobile ? TextAlign.center : TextAlign.start,
-                ),
-                 Text(
-                  'SEM SAIR DE CASA',
-                  style: isMobile
-                      ? Theme.of(context).textTheme.displayMedium?.copyWith(
-                            fontSize: 24,
-                            color: const Color(0xFF0089CD),
-                          )
-                      : Theme.of(context).textTheme.displayMedium?.copyWith(
-                            color: const Color(0xFF0089CD),
-                            fontWeight: FontWeight.bold,
-                          ),
-                  textAlign: isMobile ? TextAlign.center : TextAlign.start,
-                ),
-                const SizedBox(height: 24),
-                // Icons Placeholder Row
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
-                    children: const [
-                       _FeatureIcon(icon: Icons.medical_services_outlined, label: 'Médicos\n24h'),
-                       SizedBox(width: 15),
-                       _FeatureIcon(icon: Icons.description_outlined, label: 'Atestado\ne receitas'),
-                       SizedBox(width: 15),
-                       _FeatureIcon(icon: Icons.history_toggle_off, label: 'Use\nagora'),
-                       SizedBox(width: 15),
-                       _FeatureIcon(icon: Icons.smartphone, label: 'Suporte\ntotal'),
-                       SizedBox(width: 15),
-                       _FeatureIcon(icon: Icons.credit_card, label: 'Pagamento\nseguro'),
-                       SizedBox(width: 15),
-                       _FeatureIcon(icon: Icons.people_outline, label: 'Todas as\nidades'),
-                    ],
+                if (!isMobile)
+                  Positioned(
+                    top: -50,
+                    left: -50,
+                    child: Opacity(
+                      opacity: 0.1,
+                      child: Image.asset(
+                        'assets/images/coracao.png',
+                        height: 400,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 40),
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  alignment: isMobile
-                      ? WrapAlignment.center
-                      : WrapAlignment.start,
+                Column(
+                  crossAxisAlignment: isMobile
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        web.window.location.href =
-                            'https://cliente.softmed24h.com/cadastro';
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF29B6F6), // Cyan/Light Blue
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 22,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                    Text(
+                      'CONSULTAS\nMÉDICAS 24H\nPOR DIA!',
+                      style: isMobile
+                          ? Theme.of(context).textTheme.displayMedium?.copyWith(
+                                fontSize: 32,
+                                color: const Color(0xFFE53935), // Reddish for contrast like image
+                                height: 1.0,
+                              )
+                          : Theme.of(context).textTheme.displayLarge?.copyWith(
+                                color: const Color(0xFFE53935),
+                                height: 1.0,
+                                fontWeight: FontWeight.w900,
+                              ),
+                      textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Image.asset(
+                        'assets/images/other.png',
+                        height: isMobile ? 30 : 50,
+                        fit: BoxFit.contain,
                       ),
-                      child: const Text(
-                        'QUERO ME CONSULTAR!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    Text(
+                      'SEM SAIR DE CASA',
+                      style: isMobile
+                          ? Theme.of(context).textTheme.displayMedium?.copyWith(
+                                fontSize: 24,
+                                color: const Color(0xFF0089CD),
+                              )
+                          : Theme.of(context).textTheme.displayMedium?.copyWith(
+                                color: const Color(0xFF0089CD),
+                                fontWeight: FontWeight.bold,
+                              ),
+                      textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                    ),
+                    const SizedBox(height: 24),
+                    // Icons Placeholder Row
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: isMobile
+                            ? MainAxisAlignment.center
+                            : MainAxisAlignment.start,
+                        children: const [
+                          _FeatureIcon(
+                              icon: Icons.medical_services_outlined,
+                              label: 'Médicos\n24h'),
+                          SizedBox(width: 15),
+                          _FeatureIcon(
+                              icon: Icons.description_outlined,
+                              label: 'Atestado\ne receitas'),
+                          SizedBox(width: 15),
+                          _FeatureIcon(
+                              icon: Icons.history_toggle_off,
+                              label: 'Use\nagora'),
+                          SizedBox(width: 15),
+                          _FeatureIcon(
+                              icon: Icons.smartphone, label: 'Suporte\ntotal'),
+                          SizedBox(width: 15),
+                          _FeatureIcon(
+                              icon: Icons.credit_card,
+                              label: 'Pagamento\nseguro'),
+                          SizedBox(width: 15),
+                          _FeatureIcon(
+                              icon: Icons.people_outline,
+                              label: 'Todas as\nidades'),
+                        ],
                       ),
+                    ),
+                    const SizedBox(height: 40),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      alignment: isMobile ? Alignment.center : Alignment.centerLeft,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            web.window.location.href =
+                                'https://cliente.softmed24h.com/cadastro';
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFF29B6F6), // Cyan/Light Blue
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 22,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            'QUERO ME CONSULTAR!',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),                        
+                      ],
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          if (!isMobile) const Spacer(flex: 1),
-          // Hero Image (Placeholder using Container)
+          // Hero Image
           if (!isMobile)
             Expanded(
               flex: 5,
@@ -320,8 +356,8 @@ class HeroSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(24),
                   image: const DecorationImage(
                     fit: BoxFit.contain,
-                    // Using a placeholder image from Unsplash source
-                    image: AssetImage('assets/images/ad.png'),
+                    // Using doctor.png as inferred from the banner style request
+                    image: AssetImage('assets/images/doctor.png'),
                   ),
                 ),
               ),
@@ -367,7 +403,7 @@ class StatsSection extends StatelessWidget {
         children: const [
           StatItem(value: '+200k', label: 'Consultas'),
           StatItem(value: '+50', label: 'Médicos'),
-          StatItem(value: '+150k', label: 'Atestados e Receitas'),
+          StatItem(value: '+150k', label: 'Atestados e receitas'),
         ],
       ),
     );
@@ -670,21 +706,14 @@ class FooterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white, // Changed to white to match general aesthetic, or keep dark if preferred. Sticking to dark for footer usually standard.
-      // Reverting to dark for footer standard contrast, but using the blue might be nice.
-      // Let's stick to simple light grey or keep the dark one but maybe cleaner.
-      // The image doesn't show the footer, so I'll keep the dark one but update text colors if needed.
+      color: const Color(0xFF0089CD), // MEUMED Blue
       padding: EdgeInsets.symmetric(
         horizontal: isMobile ? 20 : 80,
         vertical: 60,
       ),
       child: Column(
         children: [
-          // Divider for visual separation from white body
-          const Divider(color: Color(0xFFEEEEEE)),
-          const SizedBox(height: 40),
-          // FAQ is separate, so this is just the bottom links
-           Row(
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
@@ -692,11 +721,11 @@ class FooterSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                     LogoWidget(fontSize: 22),
+                     LogoWidget(fontSize: 22, isWhite: true),
                      SizedBox(height: 20),
                      Text(
                       'O melhor cartão de benefícios em saúde do Brasil. Qualidade e preço justo.',
-                      style: TextStyle(color: Colors.black54),
+                      style: TextStyle(color: Colors.white70),
                     ),
                   ],
                 ),
@@ -706,23 +735,21 @@ class FooterSection extends StatelessWidget {
                 const FooterColumn(
                   title: 'Institucional',
                   links: ['Sobre nós', 'Carreiras', 'Imprensa'],
-                  textColor: Colors.black87,
                 ),
                 const SizedBox(width: 60),
                 const FooterColumn(
                   title: 'Ajuda',
                   links: ['Fale Conosco', 'FAQ', 'Política de Privacidade'],
-                  textColor: Colors.black87,
                 ),
               ],
             ],
           ),
           const SizedBox(height: 60),
-          Divider(color: Colors.grey.shade200),
+          Divider(color: Colors.white30),
           const SizedBox(height: 30),
           const Text(
             '© 2025 MEUMED. Todos os direitos reservados.',
-            style: TextStyle(color: Colors.black45, fontSize: 14),
+            style: TextStyle(color: Colors.white54, fontSize: 14),
           ),
         ],
       ),
@@ -733,8 +760,7 @@ class FooterSection extends StatelessWidget {
 class FooterColumn extends StatelessWidget {
   final String title;
   final List<String> links;
-  final Color textColor;
-  const FooterColumn({super.key, required this.title, required this.links, this.textColor = Colors.white});
+  const FooterColumn({super.key, required this.title, required this.links});
 
   @override
   Widget build(BuildContext context) {
@@ -743,8 +769,8 @@ class FooterColumn extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
-            color: textColor,
+          style: const TextStyle(
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -755,7 +781,7 @@ class FooterColumn extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
               link,
-              style: TextStyle(color: textColor.withOpacity(0.7), fontSize: 15),
+              style: const TextStyle(color: Colors.white70, fontSize: 15),
             ),
           ),
         ),
