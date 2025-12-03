@@ -63285,10 +63285,10 @@ A.Be.prototype={
 M(a){var s=null,r=A.c([new A.dj(0,B.fo,B.l.AL(0.05),B.EU,10)],t.sq)
 return A.ez(s,A.ot(A.c([B.E4,B.vp,A.Ql(B.Ni,new A.Pp(),A.Qm(s,s,B.a4,s,s,s,0,s,s,B.i,s,s,B.kl,s,s,B.wt,s,s,s,s)),B.I4,A.Ql(B.Nl,new A.Pq(),A.Qm(s,s,B.i,s,s,s,s,s,s,B.a4,s,s,B.kl,s,new A.ct(A.jd(8),B.p),s,s,s,s,s))],t.p),B.S,B.O,B.aR,s),B.u,s,s,new A.cH(B.a4,s,s,s,r,s,B.am),s,s,s,B.km,s,s,s)}}
 A.Pp.prototype={
-$0(){v.G.window.location.href="https://cliente.softmed24h.com/login"},
+$0(){v.G.window.location.href="https://meumed24h.agendar.cc/#/login"},
 $S:0}
 A.Pq.prototype={
-$0(){v.G.window.location.href="https://cliente.softmed24h.com/cadastro"},
+$0(){v.G.window.location.href="https://meumed24h.agendar.cc/#/cadastro"},
 $S:0}
 A.o0.prototype={
 M(a){return A.Sw("assets/images/logo.png",null,this.c*1.5)}}
@@ -63310,7 +63310,7 @@ g=A.c([A.QP(A.vE(B.dL,f,B.u,B.dA),h)],g)
 if(e)g.push(A.QP(A.ez(n,n,B.u,n,n,new A.cH(n,B.wJ,n,A.jd(24),n,n,B.am),n,500,n,n,n,n,n),5))
 return A.ez(n,A.adX(g,B.S,j,n,i,B.aR,0,n,n,B.bS),B.u,B.yj,n,n,n,n,n,new A.aX(l,k,l,k),n,n,1/0)}}
 A.Sd.prototype={
-$0(){v.G.window.location.href="https://cliente.softmed24h.com/cadastro"},
+$0(){v.G.window.location.href="https://meumed24h.agendar.cc/#/cadastro"},
 $S:0}
 A.iT.prototype={
 M(a){return A.f2(A.c([A.aax(this.c,B.a4,null,30),B.Ia,A.fj(this.d,B.MC,B.b9)],t.p),B.S,B.O)}}
@@ -63334,7 +63334,7 @@ r=A.ez(q,A.Sw("assets/images/safepurchase.png",q,80),B.u,q,q,q,q,q,B.zt,q,q,q,q)
 i.push(A.f2(A.c([r,B.Nn,A.ot(B.BT,B.cR,o?B.de:B.O,B.aR,B.n)],j),s,B.O))
 return A.ez(q,A.f2(A.c([p,B.iv,A.ez(q,A.adX(i,B.S,k,q,B.de,B.aR,0,q,q,B.bS),B.u,q,q,new A.cH(B.a4,q,q,l,q,q,B.am),q,q,new A.aX(n,0,n,0),new A.aX(m,m,m,m),q,q,q)],j),B.S,B.O),B.u,B.yz,q,q,q,q,q,B.kj,q,q,q)}}
 A.P1.prototype={
-$0(){v.G.window.location.href="https://cliente.softmed24h.com/cadastro"},
+$0(){v.G.window.location.href="https://meumed24h.agendar.cc/#/cadastro"},
 $S:0}
 A.BT.prototype={
 M(a){var s=null,r=this.c,q=r?20:80,p=r?1:2,o=t.p

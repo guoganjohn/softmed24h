@@ -118,7 +118,7 @@ class DesktopNavBar extends StatelessWidget {
 
           ElevatedButton(
             onPressed: () {
-              web.window.location.href = 'https://cliente.softmed24h.com/login';
+              web.window.location.href = 'https://meumed24h.agendar.cc/#/login';
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF0089CD),
@@ -133,7 +133,7 @@ class DesktopNavBar extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               web.window.location.href =
-                  'https://cliente.softmed24h.com/cadastro';
+                  'https://meumed24h.agendar.cc/#/cadastro';
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
@@ -317,7 +317,7 @@ class HeroSection extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {
                             web.window.location.href =
-                                'https://cliente.softmed24h.com/cadastro';
+                                'https://meumed24h.agendar.cc/#/cadastro';
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -609,7 +609,7 @@ class CtaSection extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     web.window.location.href =
-                        'https://cliente.softmed24h.com/cadastro';
+                        'https://meumed24h.agendar.cc/#/cadastro';
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF58634), // Orange
