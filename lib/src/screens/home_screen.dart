@@ -724,7 +724,7 @@ class FooterSection extends StatelessWidget {
                      LogoWidget(fontSize: 22, isWhite: true),
                      SizedBox(height: 20),
                      Text(
-                      'O melhor cartão de benefícios em saúde do Brasil. Qualidade e preço justo.',
+                      'A telemedicina mais rápida e segura do Brasil!',
                       style: TextStyle(color: Colors.white70),
                     ),
                   ],
