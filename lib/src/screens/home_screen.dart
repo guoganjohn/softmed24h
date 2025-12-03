@@ -63,17 +63,13 @@ class LandingPage extends StatelessWidget {
               surfaceTintColor: Colors.white,
               elevation: 2,
               title: const LogoWidget(fontSize: 20, isWhite: true),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.menu, color: Colors.white),
-                  onPressed: () {},
-                ),
-              ],
+              iconTheme: const IconThemeData(color: Colors.white),
             )
           : const PreferredSize(
               preferredSize: Size.fromHeight(90),
               child: DesktopNavBar(),
             ),
+      endDrawer: isMobile ? const MobileDrawer() : null,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -786,6 +782,65 @@ class FooterColumn extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class MobileDrawer extends StatelessWidget {
+  const MobileDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      backgroundColor: Colors.white,
+      child: Column(
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Color(0xFF0089CD),
+            ),
+            child: Center(
+              child: const LogoWidget(isWhite: true, fontSize: 30),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    web.window.location.href = 'https://meumed24h.agendar.cc/#/login';
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF0089CD),
+                    side: const BorderSide(color: Color(0xFF0089CD)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text('ENTRAR'),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    web.window.location.href =
+                        'https://meumed24h.agendar.cc/#/cadastro';
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0089CD),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text(
+                    'QUERO ME CONSULTAR!',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
