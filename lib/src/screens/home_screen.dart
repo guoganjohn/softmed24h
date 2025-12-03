@@ -209,7 +209,9 @@ class HeroSection extends StatelessWidget {
       ),
       child: Flex(
         direction: isMobile ? Axis.vertical : Axis.horizontal,
-        mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: isMobile
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Text Content
@@ -239,15 +241,17 @@ class HeroSection extends StatelessWidget {
                       'CONSULTAS\nMÉDICAS 24H\nPOR DIA!',
                       style: isMobile
                           ? Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: 32,
-                                color: const Color(0xFFE53935), // Reddish for contrast like image
-                                height: 1.0,
-                              )
+                              fontSize: 32,
+                              color: const Color(
+                                0xFFE53935,
+                              ), // Reddish for contrast like image
+                              height: 1.0,
+                            )
                           : Theme.of(context).textTheme.displayLarge?.copyWith(
-                                color: const Color(0xFFE53935),
-                                height: 1.0,
-                                fontWeight: FontWeight.w900,
-                              ),
+                              color: const Color(0xFFE53935),
+                              height: 1.0,
+                              fontWeight: FontWeight.w900,
+                            ),
                       textAlign: isMobile ? TextAlign.center : TextAlign.start,
                     ),
                     Padding(
@@ -262,13 +266,13 @@ class HeroSection extends StatelessWidget {
                       'SEM SAIR DE CASA',
                       style: isMobile
                           ? Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: 24,
-                                color: const Color(0xFF0089CD),
-                              )
+                              fontSize: 24,
+                              color: const Color(0xFF0089CD),
+                            )
                           : Theme.of(context).textTheme.displayMedium?.copyWith(
-                                color: const Color(0xFF0089CD),
-                                fontWeight: FontWeight.bold,
-                              ),
+                              color: const Color(0xFF0089CD),
+                              fontWeight: FontWeight.bold,
+                            ),
                       textAlign: isMobile ? TextAlign.center : TextAlign.start,
                     ),
                     const SizedBox(height: 24),
@@ -281,34 +285,43 @@ class HeroSection extends StatelessWidget {
                             : MainAxisAlignment.start,
                         children: const [
                           _FeatureIcon(
-                              icon: Icons.medical_services_outlined,
-                              label: 'Médicos\n24h'),
+                            icon: Icons.medical_services_outlined,
+                            label: 'Médicos\n24h',
+                          ),
                           SizedBox(width: 15),
                           _FeatureIcon(
-                              icon: Icons.description_outlined,
-                              label: 'Atestado\ne receitas'),
+                            icon: Icons.description_outlined,
+                            label: 'Atestado\ne receitas',
+                          ),
                           SizedBox(width: 15),
                           _FeatureIcon(
-                              icon: Icons.history_toggle_off,
-                              label: 'Use\nagora'),
+                            icon: Icons.history_toggle_off,
+                            label: 'Use\nagora',
+                          ),
                           SizedBox(width: 15),
                           _FeatureIcon(
-                              icon: Icons.smartphone, label: 'Suporte\ntotal'),
+                            icon: Icons.smartphone,
+                            label: 'Suporte\ntotal',
+                          ),
                           SizedBox(width: 15),
                           _FeatureIcon(
-                              icon: Icons.credit_card,
-                              label: 'Pagamento\nseguro'),
+                            icon: Icons.credit_card,
+                            label: 'Pagamento\nseguro',
+                          ),
                           SizedBox(width: 15),
                           _FeatureIcon(
-                              icon: Icons.people_outline,
-                              label: 'Todas as\nidades'),
+                            icon: Icons.people_outline,
+                            label: 'Todas as\nidades',
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 40),
                     Stack(
                       clipBehavior: Clip.none,
-                      alignment: isMobile ? Alignment.center : Alignment.centerLeft,
+                      alignment: isMobile
+                          ? Alignment.center
+                          : Alignment.centerLeft,
                       children: [
                         ElevatedButton(
                           onPressed: () {
@@ -316,8 +329,9 @@ class HeroSection extends StatelessWidget {
                                 'https://meumed24h.agendar.cc/#/cadastro';
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xFF29B6F6), // Cyan/Light Blue
+                            backgroundColor: const Color(
+                              0xFF29B6F6,
+                            ), // Cyan/Light Blue
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 32,
@@ -334,7 +348,7 @@ class HeroSection extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),                        
+                        ),
                       ],
                     ),
                   ],
@@ -375,7 +389,11 @@ class _FeatureIcon extends StatelessWidget {
       children: [
         Icon(icon, color: const Color(0xFF0089CD), size: 30),
         const SizedBox(height: 5),
-        Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 10, color: Color(0xFF0089CD))),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 10, color: Color(0xFF0089CD)),
+        ),
       ],
     );
   }
@@ -423,10 +441,7 @@ class StatItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white, fontSize: 16),
-        ),
+        Text(label, style: const TextStyle(color: Colors.white, fontSize: 16)),
       ],
     );
   }
@@ -484,7 +499,8 @@ class BenefitsSection extends StatelessWidget {
               BenefitCard(
                 icon: Icons.local_hospital_outlined,
                 title: 'Sem Burocracia',
-                description: 'Rapidez e segurança, com validade em todo Brasil.',
+                description:
+                    'Rapidez e segurança, com validade em todo Brasil.',
               ),
             ],
           ),
@@ -643,7 +659,8 @@ class CtaSection extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 10),
                       child: Image.asset(
                         'assets/images/safepurchase.png',
-                        height: 80, // Adjust height as needed to match the design
+                        height:
+                            80, // Adjust height as needed to match the design
                       ),
                     ),
                     const Text(
@@ -717,9 +734,9 @@ class FooterSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                     LogoWidget(fontSize: 22, isWhite: true),
-                     SizedBox(height: 20),
-                     Text(
+                    LogoWidget(fontSize: 22, isWhite: true),
+                    SizedBox(height: 20),
+                    Text(
                       'A telemedicina mais rápida e segura do Brasil!',
                       style: TextStyle(color: Colors.white70),
                     ),
@@ -796,12 +813,8 @@ class MobileDrawer extends StatelessWidget {
       child: Column(
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Color(0xFF0089CD),
-            ),
-            child: Center(
-              child: const LogoWidget(isWhite: true, fontSize: 30),
-            ),
+            decoration: const BoxDecoration(color: Color(0xFF0089CD)),
+            child: Center(child: const LogoWidget(isWhite: true, fontSize: 30)),
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -810,7 +823,8 @@ class MobileDrawer extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    web.window.location.href = 'https://meumed24h.agendar.cc/#/login';
+                    web.window.location.href =
+                        'https://meumed24h.agendar.cc/#/login';
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
